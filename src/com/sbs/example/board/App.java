@@ -86,39 +86,16 @@ public class App {
 			System.out.printf("새 내용: ");
 			body = scanner.nextLine();
 
-			PreparedStatement pstat = null; // SQL 구문을 실행하는 역할
-
-			try {
-
-				String sql = "UPDATE article";
-				sql += " SET regDate = NOW()";
-				sql += ", updateDate = NOW()";
-				sql += ", title = \"" + title + "\"";
-				sql += ", body = \"" + body + "\"";
-				sql += " WHERE id = " + id;
-
-				pstat = conn.prepareStatement(sql);
-				pstat.executeUpdate();
-
-			} catch (SQLException e) {
-				System.out.println("에러: " + e);
-			} finally {
-				try {
-					if (conn != null && !conn.isClosed()) {
-						conn.close(); // 연결 종료
-					}
-				} catch (SQLException e) {
-					e.printStackTrace();
-				}
-
-				try {
-					if (pstat != null && !pstat.isClosed()) {
-						pstat.close(); // 연결 종료
-					}
-				} catch (SQLException e) {
-					e.printStackTrace();
-				}
-			}
+			SecSql sql = new SecSql();
+			
+			sql.append("UPDATE article");
+			sql.append("SET regDate = NOW()");
+			sql.append(", updateDate = NOW()");
+			sql.append(", title = ?", title);
+			sql.append(", body = ?", body);
+			sql.append("WHERE id = ?", id);
+			
+			DBUtil.update(conn, sql);
 
 			System.out.printf("%d번 글이 수정되었습니다. \n", id);
 

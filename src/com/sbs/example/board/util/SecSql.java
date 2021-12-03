@@ -28,17 +28,17 @@ public class SecSql {
 	public SecSql append(Object... args) {
 		if (args.length > 0) {
 			String sqlBit = (String) args[0];
-			sqlBuilder.append(sqlBit + " ");
+			sqlBuilder.append(sqlBit + " "); // 공백 포함해서 sqlBuilder에 append
 		}
 
 		for (int i = 1; i < args.length; i++) {
-			datas.add(args[i]);
+			datas.add(args[i]); // ?로 치환할 데이터의 List
 		}
 
 		return this;
 	}
 
-	public PreparedStatement getPreparedStatement(Connection dbConn) throws SQLException {
+	public PreparedStatement getPreparedStatement(Connection dbConn) throws SQLException { // SQLException 포함
 		PreparedStatement stmt = null;
 
 		if (isInsert()) {
@@ -52,9 +52,9 @@ public class SecSql {
 			int parameterIndex = i + 1;
 
 			if (data instanceof Integer) {
-				stmt.setInt(parameterIndex, (int) data);
+				stmt.setInt(parameterIndex, (int) data); // ?에 int 데이터 치환
 			} else if (data instanceof String) {
-				stmt.setString(parameterIndex, (String) data);
+				stmt.setString(parameterIndex, (String) data); // ?에 String 데이터 치환
 			}
 		}
 

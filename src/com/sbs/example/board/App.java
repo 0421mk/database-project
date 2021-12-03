@@ -9,11 +9,16 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
+import com.sbs.example.board.util.DBUtil;
+import com.sbs.example.board.util.SecSql;
+
 public class App {
 
 	public void run() {
 
 		Scanner scanner = new Scanner(System.in);
+		
+		// DB 연결 코드
 		Connection conn = null; // DB 접속 객체
 		
 		try {
@@ -26,6 +31,7 @@ public class App {
 			// TODO Auto-generated catch block
 			System.out.println("에러: " + e);
 		}
+		// DB 연결 코드
 
 		while (true) {
 			System.out.printf("명령어) ");
@@ -54,40 +60,18 @@ public class App {
 			title = scanner.nextLine();
 			System.out.printf("내용: ");
 			body = scanner.nextLine();
-
-			PreparedStatement pstat = null; // SQL 구문을 실행하는 역할
-
-			try {
-
-				String sql = "INSERT INTO article";
-				sql += " SET regDate = NOW()";
-				sql += ", updateDate = NOW()";
-				sql += ", title = \"" + title + "\"";
-				sql += ", body = \"" + body + "\"";
-
-				pstat = conn.prepareStatement(sql);
-				int afftecRows = pstat.executeUpdate(); // 반환값이 실행된 쿼리의 데이터 수
-
-				System.out.println("affectedRows : " + afftecRows);
-			} catch (SQLException e) {
-				e.printStackTrace();
-			} finally {
-				try {
-					if (conn != null && !conn.isClosed()) {
-						conn.close(); // 연결 종료
-					}
-				} catch (SQLException e) {
-					e.printStackTrace();
-				}
-
-				try {
-					if (pstat != null && !pstat.isClosed()) {
-						pstat.close(); // 연결 종료
-					}
-				} catch (SQLException e) {
-					e.printStackTrace();
-				}
-			}
+			
+			SecSql sql = new SecSql();
+			
+			sql.append("INSERT INTO article");
+			sql.append("SET regDate = NOW()");
+			sql.append(", updateDate = NOW()");
+			sql.append(", title = ?", title);
+			sql.append(", body = ?", body);
+			
+			int id = DBUtil.insert(conn, sql);
+			
+			System.out.printf("%d번 게시물이 생성되었습니다. \n", id);
 
 		} else if (cmd.startsWith("article modify")) {
 

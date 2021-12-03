@@ -7,6 +7,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Scanner;
 
 import com.sbs.example.board.util.DBUtil;
@@ -103,47 +104,18 @@ public class App {
 
 			System.out.println("== 게시글 목록 ==");
 
-			PreparedStatement pstat = null; // SQL 구문을 실행하는 역할
-			ResultSet rs = null; // ResultSet은 executeQuery 쿼리의 결과값을 저장, next 함수를 통해 데이터 참조 가능
-
 			List<Article> articles = new ArrayList<>(); // 데이터베이스
 
-			try {
-
-				String sql = "SELECT * FROM article";
-				sql += " ORDER BY id DESC";
-
-				pstat = conn.prepareStatement(sql);
-				rs = pstat.executeQuery(sql);
-
-				while (rs.next()) { // 데이터가 없을때까지 true
-					int id = rs.getInt("id");
-					String regDate = rs.getString("regDate");
-					String updateDate = rs.getString("updateDate");
-					String title = rs.getString("title");
-					String body = rs.getString("body");
-
-					Article article = new Article(id, regDate, updateDate, title, body);
-					articles.add(article);
-				}
-			} catch (SQLException e) {
-				System.out.println("에러: " + e);
-			} finally {
-				try {
-					if (conn != null && !conn.isClosed()) {
-						conn.close(); // 연결 종료
-					}
-				} catch (SQLException e) {
-					e.printStackTrace();
-				}
-
-				try {
-					if (pstat != null && !pstat.isClosed()) {
-						pstat.close(); // 연결 종료
-					}
-				} catch (SQLException e) {
-					e.printStackTrace();
-				}
+			SecSql sql = new SecSql();
+			
+			sql.append("SELECT * FROM article");
+			sql.append("ORDER BY id DESC"); // Select 쿼리시 DBUtil에서 쿼리 데이터 결과값에 해당하는 메소드를 적절히 사용해야 합니다.
+			
+			List<Map<String, Object>> articleListMap = DBUtil.selectRows(conn, sql); // List<Article>이 사용하기 편합니다.
+			// DB에서 데이터를 받을 때는 List<Map<String, Object>> 형태가 편하고 프로그램에서 사용하기에는 List<Article> 형태가 편합니다.
+			
+			for(Map<String, Object> articleMap : articleListMap) {
+				articles.add(new Article(articleMap));
 			}
 
 			if (articles.size() == 0) {

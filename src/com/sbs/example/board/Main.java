@@ -15,8 +15,6 @@ public class Main {
 
 		Scanner scanner = new Scanner(System.in);
 
-		List<Article> articles = new ArrayList<>(); // 데이터베이스
-
 		while (true) {
 			System.out.printf("명령어) ");
 			String cmd = scanner.nextLine();
@@ -43,7 +41,6 @@ public class Main {
 
 					String sql = "INSERT INTO article";
 					sql += " SET regDate = NOW()";
-
 					sql += ", updateDate = NOW()";
 					sql += ", title = \"" + title + "\"";
 					sql += ", body = \"" + body + "\"";
@@ -74,13 +71,71 @@ public class Main {
 					}
 				}
 
+			} else if (cmd.startsWith("article modify")) {
+				
+				int id = Integer.parseInt(cmd.split(" ")[2].trim());
+				
+				String title;
+				String body;
+
+				System.out.println("== 게시글 수정 ==");
+				System.out.printf("새 제목: ");
+				title = scanner.nextLine();
+				System.out.printf("새 내용: ");
+				body = scanner.nextLine();
+
+				Connection conn = null; // DB 접속 객체
+				PreparedStatement pstat = null; // SQL 구문을 실행하는 역할
+
+				try {
+					Class.forName("com.mysql.cj.jdbc.Driver");
+					String url = "jdbc:mysql://127.0.0.1:3306/text_board?useUnicode=true&characterEncoding=utf8&autoReconnect=true&serverTimezone=Asia/Seoul&useOldAliasMetadataBehavior=true&zeroDateTimeNehavior=convertToNull";
+
+					conn = DriverManager.getConnection(url, "root", "");
+
+					String sql = "UPDATE article";
+					sql += " SET regDate = NOW()";
+					sql += ", updateDate = NOW()";
+					sql += ", title = \"" + title + "\"";
+					sql += ", body = \"" + body + "\"";
+					sql += " WHERE id = " + id;
+
+					pstat = conn.prepareStatement(sql);
+					pstat.executeUpdate();
+					
+				} catch (ClassNotFoundException e) {
+					System.out.println("드라이버 로딩 실패");
+				} catch (SQLException e) {
+					System.out.println("에러: " + e);
+				} finally {
+					try {
+						if (conn != null && !conn.isClosed()) {
+							conn.close(); // 연결 종료
+						}
+					} catch (SQLException e) {
+						e.printStackTrace();
+					}
+
+					try {
+						if (pstat != null && !pstat.isClosed()) {
+							pstat.close(); // 연결 종료
+						}
+					} catch (SQLException e) {
+						e.printStackTrace();
+					}
+				}
+				
+				System.out.printf("%d번 글이 수정되었습니다. \n", id);
+
 			} else if (cmd.equals("article list")) {
 
 				System.out.println("== 게시글 목록 ==");
-				
+
 				Connection conn = null; // DB 접속 객체
 				PreparedStatement pstat = null; // SQL 구문을 실행하는 역할
 				ResultSet rs = null; // ResultSet은 executeQuery 쿼리의 결과값을 저장, next 함수를 통해 데이터 참조 가능
+				
+				List<Article> articles = new ArrayList<>(); // 데이터베이스
 
 				try {
 					Class.forName("com.mysql.cj.jdbc.Driver");
@@ -144,6 +199,7 @@ public class Main {
 			}
 		}
 
+		scanner.close();
 	}
 
 }

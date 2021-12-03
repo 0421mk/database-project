@@ -128,6 +128,21 @@ public class App {
 				System.out.printf("%d / %s\n", article.id, article.title);
 			}
 
+		} else if (cmd.startsWith("article delete")) {
+
+			int id = Integer.parseInt(cmd.split(" ")[2].trim());
+			
+			System.out.println("== 게시글 삭제 ==");
+
+			SecSql sql = new SecSql();
+			
+			sql.append("DELETE FROM article");
+			sql.append("WHERE id = ?", id);
+			
+			DBUtil.delete(conn, sql);
+
+			System.out.printf("%d번 글이 삭제되었습니다. \n", id);
+
 		} else if (cmd.equals("system exit")) {
 			System.out.println("프로그램을 종료합니다.");
 			return -1;

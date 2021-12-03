@@ -10,7 +10,7 @@ public class Main {
 
 		Scanner scanner = new Scanner(System.in);
 
-		List<Article> articles = new ArrayList<>();
+		List<Article> articles = new ArrayList<>(); // 데이터베이스
 		int lastArticleId = 0;
 
 		while (true) {
@@ -31,9 +31,23 @@ public class Main {
 				
 				Article article = new Article(id, title, body);
 				articles.add(article);
-				
+								
 				lastArticleId++;
 
+			} else if (cmd.equals("article list")) {
+				
+				System.out.println("== 게시글 목록 ==");
+				
+				if (articles.size() == 0) {
+					System.out.println("게시글이 존재하지 않습니다.");
+					continue;
+				}
+				
+				System.out.println("번호 / 제목");
+				for (Article article : articles) {
+					System.out.printf("%d / %s\n", article.id, article.title);
+				}
+								
 			} else if (cmd.equals("system exit")) {
 				System.out.println("프로그램을 종료합니다.");
 				break;

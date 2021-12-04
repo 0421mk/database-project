@@ -26,3 +26,6 @@ CREATE TABLE `member` (
 
 DESC article;
 SELECT * FROM `member`;
+
+ALTER TABLE article ADD COLUMN memberId INT(10) UNSIGNED NOT NULL AFTER updateDate;
+DESC article;

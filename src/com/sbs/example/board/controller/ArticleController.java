@@ -44,7 +44,7 @@ public class ArticleController {
 		System.out.printf("내용: ");
 		body = scanner.nextLine();
 
-		int id = articleService.doWrite(title, body);
+		int id = articleService.doWrite(title, body, session.loginedMemberId);
 
 		System.out.printf("%d번 게시물이 생성되었습니다. \n", id);
 

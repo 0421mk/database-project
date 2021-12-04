@@ -1,4 +1,4 @@
-package com.sbs.example.board;
+package com.sbs.example.board.dto;
 
 import java.time.LocalDateTime;
 import java.util.Map;

@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
 
-import com.sbs.example.board.Article;
+import com.sbs.example.board.dto.Article;
 import com.sbs.example.board.session.Session;
 import com.sbs.example.board.util.DBUtil;
 import com.sbs.example.board.util.SecSql;

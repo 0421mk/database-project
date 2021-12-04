@@ -4,7 +4,7 @@ import java.sql.Connection;
 import java.util.Map;
 import java.util.Scanner;
 
-import com.sbs.example.board.Member;
+import com.sbs.example.board.dto.Member;
 import com.sbs.example.board.session.Session;
 import com.sbs.example.board.util.DBUtil;
 import com.sbs.example.board.util.SecSql;

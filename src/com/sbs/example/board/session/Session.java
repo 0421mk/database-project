@@ -1,6 +1,6 @@
 package com.sbs.example.board.session;
 
-import com.sbs.example.board.Member;
+import com.sbs.example.board.dto.Member;
 
 public class Session {
 	public int loginedMemberId;

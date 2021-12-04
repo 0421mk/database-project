@@ -100,6 +100,11 @@ public class MemberController {
 
 	public void doLogin() {
 		
+		if (session.loginedMemberId != -1) {
+			System.out.println("로그아웃 후 이용해주세요.");
+			return;
+		}
+		
 		String loginId;
 		String loginPw;
 		
@@ -154,7 +159,7 @@ public class MemberController {
 	public void doLogout() {
 		
 		if (session.loginedMember == null) {
-			System.out.println("로그인 유저가 없습니다.");
+			System.out.println("로그인 후 이용해주세요.");
 			return;
 		}
 		

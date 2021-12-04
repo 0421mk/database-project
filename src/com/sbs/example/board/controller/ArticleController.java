@@ -29,6 +29,11 @@ public class ArticleController {
 	}
 
 	public void doWrite() {
+		
+		if (session.loginedMember == null) {
+			System.out.println("로그인 후 이용해주세요.");
+			return;
+		}
 
 		String title;
 		String body;
@@ -46,6 +51,11 @@ public class ArticleController {
 	}
 
 	public void doMoidfy() {
+		
+		if (session.loginedMember == null) {
+			System.out.println("로그인 후 이용해주세요.");
+			return;
+		}
 
 		int id = Integer.parseInt(cmd.split(" ")[2].trim());
 
@@ -111,6 +121,11 @@ public class ArticleController {
 	}
 
 	public void doDelete() {
+		
+		if (session.loginedMember == null) {
+			System.out.println("로그인 후 이용해주세요.");
+			return;
+		}
 
 		int id = Integer.parseInt(cmd.split(" ")[2].trim());
 

@@ -7,25 +7,35 @@ import java.util.Map;
 import java.util.Scanner;
 
 import com.sbs.example.board.dto.Article;
+import com.sbs.example.board.service.ArticleService;
 import com.sbs.example.board.session.Session;
 import com.sbs.example.board.util.DBUtil;
 import com.sbs.example.board.util.SecSql;
 
 public class ArticleController {
-	Connection conn;
-	Scanner scanner;
-	String cmd;
-	Session session;
+	
+	private ArticleService articleService;
+	
+	private Connection conn;
+	private Scanner scanner;
+	private String cmd;
+	private Session session;
+	
+	// DB 접근은 DAO에서 합니다.
+	// 하지만 DAO에 바로 접근할 수 없습니다. Service를 거치는게 관례입니다.
+	// scanner, cmd, session은 컨트롤러에서 클라이언트를 상대할 때 사용하는 객체 및 변수들입니다.
 
 	public ArticleController(Connection conn, Scanner scanner, String cmd, Session session) {
 		this.conn = conn;
 		this.scanner = scanner;
 		this.cmd = cmd;
 		this.session = session;
+		
+		articleService = new ArticleService(conn);
 	}
 
 	public void doWrite() {
-		
+
 		String title;
 		String body;
 
@@ -35,22 +45,14 @@ public class ArticleController {
 		System.out.printf("내용: ");
 		body = scanner.nextLine();
 
-		SecSql sql = new SecSql();
-
-		sql.append("INSERT INTO article");
-		sql.append("SET regDate = NOW()");
-		sql.append(", updateDate = NOW()");
-		sql.append(", title = ?", title);
-		sql.append(", body = ?", body);
-
-		int id = DBUtil.insert(conn, sql);
+		int id = articleService.doWrite(title, body);
 
 		System.out.printf("%d번 게시물이 생성되었습니다. \n", id);
-		
+
 	}
 
 	public void doMoidfy() {
-		
+
 		int id = Integer.parseInt(cmd.split(" ")[2].trim());
 
 		SecSql sql = new SecSql();
@@ -87,11 +89,11 @@ public class ArticleController {
 		DBUtil.update(conn, sql);
 
 		System.out.printf("%d번 글이 수정되었습니다. \n", id);
-		
+
 	}
 
 	public void showList() {
-		
+
 		System.out.println("== 게시글 목록 ==");
 
 		List<Article> articles = new ArrayList<>(); // 데이터베이스
@@ -118,11 +120,11 @@ public class ArticleController {
 		for (Article article : articles) {
 			System.out.printf("%d / %s\n", article.id, article.title);
 		}
-		
+
 	}
 
 	public void showDetail() {
-		
+
 		int id = Integer.parseInt(cmd.split(" ")[2].trim());
 
 		SecSql sql = new SecSql();
@@ -153,11 +155,11 @@ public class ArticleController {
 		System.out.printf("수정날짜: %s\n", article.updateDate);
 		System.out.printf("제목: %s\n", article.title);
 		System.out.printf("내용: %s\n", article.body);
-		
+
 	}
 
 	public void doDelete() {
-		
+
 		int id = Integer.parseInt(cmd.split(" ")[2].trim());
 
 		System.out.println("== 게시글 삭제 ==");
@@ -183,7 +185,7 @@ public class ArticleController {
 		DBUtil.delete(conn, sql);
 
 		System.out.printf("%d번 글이 삭제되었습니다. \n", id);
-		
+
 	}
 
 }

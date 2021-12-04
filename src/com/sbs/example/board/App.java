@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
 
+import com.sbs.example.board.session.Session;
 import com.sbs.example.board.util.DBUtil;
 import com.sbs.example.board.util.SecSql;
 
@@ -18,6 +19,7 @@ public class App {
 	public void run() {
 
 		Scanner scanner = new Scanner(System.in);
+		Session session = new Session();
 
 		// DB 연결 코드
 		Connection conn = null; // DB 접속 객체
@@ -39,7 +41,7 @@ public class App {
 			String cmd = scanner.nextLine();
 			cmd = cmd.trim();
 
-			int actionResult = doAction(conn, scanner, cmd);
+			int actionResult = doAction(conn, scanner, cmd, session);
 
 			if (actionResult == -1) {
 				break;
@@ -50,7 +52,7 @@ public class App {
 
 	}
 
-	private int doAction(Connection conn, Scanner scanner, String cmd) {
+	private int doAction(Connection conn, Scanner scanner, String cmd, Session session) {
 
 		if (cmd.equals("member join")) {
 			String loginId;
@@ -199,6 +201,10 @@ public class App {
 			}
 						
 			System.out.printf("%s님 환영합니다. \n", member.name);
+			
+			// 로그인 처리
+			session.loginedMemberId = member.id;
+			session.loginedMember = member;
 
 		} else if (cmd.equals("article write")) {
 			String title;

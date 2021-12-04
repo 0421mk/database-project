@@ -5,8 +5,6 @@ import java.util.List;
 
 import com.sbs.example.board.dao.ArticleDao;
 import com.sbs.example.board.dto.Article;
-import com.sbs.example.board.util.DBUtil;
-import com.sbs.example.board.util.SecSql;
 
 public class ArticleService {
 	private ArticleDao articleDao;

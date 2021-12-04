@@ -12,7 +12,6 @@ public class ArticleController {
 	
 	private ArticleService articleService;
 	
-	private Connection conn;
 	private Scanner scanner;
 	private String cmd;
 	private Session session;
@@ -22,7 +21,6 @@ public class ArticleController {
 	// scanner, cmd, session은 컨트롤러에서 클라이언트를 상대할 때 사용하는 객체 및 변수들입니다.
 
 	public ArticleController(Connection conn, Scanner scanner, String cmd, Session session) {
-		this.conn = conn;
 		this.scanner = scanner;
 		this.cmd = cmd;
 		this.session = session;

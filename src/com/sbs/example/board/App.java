@@ -206,6 +206,14 @@ public class App {
 			session.loginedMemberId = member.id;
 			session.loginedMember = member;
 
+		} else if (cmd.equals("whoami")) {
+			
+			if (session.loginedMember == null) {
+				System.out.println("로그인 유저가 없습니다.");
+				return 0;
+			}
+			System.out.printf("현재 로그인 유저: %s\n", session.loginedMember.name);
+
 		} else if (cmd.equals("article write")) {
 			String title;
 			String body;

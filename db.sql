@@ -29,3 +29,8 @@ SELECT * FROM `member`;
 
 ALTER TABLE article ADD COLUMN memberId INT(10) UNSIGNED NOT NULL AFTER updateDate;
 DESC article;
+
+SELECT *, m.name AS extra_writer FROM article AS a
+LEFT JOIN `member` AS m
+ON a.memberId = m.id
+ORDER BY a.id DESC;

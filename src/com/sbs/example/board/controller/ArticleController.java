@@ -9,13 +9,13 @@ import com.sbs.example.board.service.ArticleService;
 import com.sbs.example.board.session.Session;
 
 public class ArticleController {
-	
+
 	private ArticleService articleService;
-	
+
 	private Scanner scanner;
 	private String cmd;
 	private Session session;
-	
+
 	// DB 접근은 DAO에서 합니다.
 	// 하지만 DAO에 바로 접근할 수 없습니다. Service를 거치는게 관례입니다.
 	// scanner, cmd, session은 컨트롤러에서 클라이언트를 상대할 때 사용하는 객체 및 변수들입니다.
@@ -24,12 +24,12 @@ public class ArticleController {
 		this.scanner = scanner;
 		this.cmd = cmd;
 		this.session = session;
-		
+
 		articleService = new ArticleService(conn);
 	}
 
 	public void doWrite() {
-		
+
 		if (session.loginedMember == null) {
 			System.out.println("로그인 후 이용해주세요.");
 			return;
@@ -51,7 +51,7 @@ public class ArticleController {
 	}
 
 	public void doMoidfy() {
-		
+
 		if (session.loginedMember == null) {
 			System.out.println("로그인 후 이용해주세요.");
 			return;
@@ -63,6 +63,13 @@ public class ArticleController {
 
 		if (articlesCount == 0) {
 			System.out.printf("%d번 게시글이 존재하지 않습니다.\n", id);
+			return;
+		}
+
+		Article article = articleService.getArticle(id);
+
+		if (article.memberId != session.loginedMemberId) {
+			System.out.println("권한이 없습니다.");
 			return;
 		}
 
@@ -109,7 +116,7 @@ public class ArticleController {
 			System.out.printf("%d번 게시글이 존재하지 않습니다.\n", id);
 			return;
 		}
-		
+
 		Article article = articleService.getArticle(id);
 
 		System.out.printf("번호: %d\n", article.id);
@@ -121,7 +128,7 @@ public class ArticleController {
 	}
 
 	public void doDelete() {
-		
+
 		if (session.loginedMember == null) {
 			System.out.println("로그인 후 이용해주세요.");
 			return;
@@ -135,6 +142,13 @@ public class ArticleController {
 
 		if (articlesCount == 0) {
 			System.out.printf("%d번 게시글이 존재하지 않습니다.\n", id);
+			return;
+		}
+
+		Article article = articleService.getArticle(id);
+
+		if (article.memberId != session.loginedMemberId) {
+			System.out.println("권한이 없습니다.");
 			return;
 		}
 

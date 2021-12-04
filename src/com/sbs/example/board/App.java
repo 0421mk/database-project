@@ -206,6 +206,18 @@ public class App {
 			session.loginedMemberId = member.id;
 			session.loginedMember = member;
 
+		} else if (cmd.equals("member logout")) {
+			
+			if (session.loginedMember == null) {
+				System.out.println("로그인 유저가 없습니다.");
+				return 0;
+			}
+			
+			session.loginedMemberId = -1;
+			session.loginedMember = null;
+
+			System.out.println("로그아웃 완료");
+
 		} else if (cmd.equals("whoami")) {
 			
 			if (session.loginedMember == null) {

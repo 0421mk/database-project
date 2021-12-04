@@ -63,10 +63,14 @@ public class ArticleDao {
 		List<Article> articles = new ArrayList<>(); // 데이터베이스
 
 		SecSql sql = new SecSql();
-
-		sql.append("SELECT * FROM article");
-		sql.append("ORDER BY id DESC"); // Select 쿼리시 DBUtil에서 쿼리 데이터 결과값에 해당하는 메소드를 적절히 사용해야 합니다.
-
+		
+		
+		sql.append("SELECT *, m.name AS extra_writer");
+		sql.append("FROM article AS a");
+		sql.append("LEFT JOIN `member` AS m");
+		sql.append("ON a.memberId = m.id"); // Select 쿼리시 DBUtil에서 쿼리 데이터 결과값에 해당하는 메소드를 적절히 사용해야 합니다.
+		sql.append("ORDER BY a.id DESC");
+		
 		List<Map<String, Object>> articleListMap = DBUtil.selectRows(conn, sql); // List<Article>이 사용하기 편합니다.
 		// DB에서 데이터를 받을 때는 List<Map<String, Object>> 형태가 편하고 프로그램에서 사용하기에는 List<Article>
 		// 형태가 편합니다.

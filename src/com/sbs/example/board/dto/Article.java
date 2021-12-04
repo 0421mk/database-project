@@ -10,6 +10,7 @@ public class Article {
 	public int memberId;
 	public String title;
 	public String body;
+	public String extra_writer; // "extra_"는 다른 테이블과 조인해서 얻은 값을 저장합니다.
 
 	public Article(Map<String, Object> articleMap) {
 		this.id = (int) articleMap.get("id");
@@ -18,6 +19,7 @@ public class Article {
 		this.memberId = (int) articleMap.get("memberId");
 		this.title = (String) articleMap.get("title");
 		this.body = (String) articleMap.get("body");
+		this.extra_writer = (String) articleMap.get("extra_writer");
 		// 자료형 타입 알아내는 방법 : 데이터.getClass().getName();
 	}
 }

@@ -57,8 +57,8 @@ public class App {
 			String loginPw;
 			String loginPwConfirm;
 			String name;
-
-			SecSql sql = new SecSql();
+			
+			SecSql sql;
 			
 			System.out.println("== 회원가입 ==");
 
@@ -70,6 +70,8 @@ public class App {
 					System.out.println("아이디를 입력해주세요.");
 					continue;
 				}
+				
+				sql = new SecSql();
 				
 				sql.append("SELECT COUNT(*)");
 				sql.append("FROM member");
@@ -137,6 +139,66 @@ public class App {
 			DBUtil.insert(conn, sql);
 						
 			System.out.printf("%s님 환영합니다. \n", name);
+
+		} else if (cmd.equals("member login")) {
+			String loginId;
+			String loginPw;
+
+			SecSql sql;
+			
+			System.out.println("== 로그인 ==");
+
+			while (true) {
+				System.out.printf("로그인 아이디: ");
+				loginId = scanner.nextLine();
+
+				if (loginId.length() == 0) {
+					System.out.println("아이디를 입력해주세요.");
+					continue;
+				}
+				
+				sql = new SecSql();
+				
+				sql.append("SELECT COUNT(*)");
+				sql.append("FROM member");
+				sql.append("WHERE loginId = ?", loginId);
+				
+				int memberCnt = DBUtil.selectRowIntValue(conn, sql);
+				
+				if(memberCnt == 0) {
+					System.out.println("아이디가 존재하지 않습니다.");
+					continue;
+				}
+
+				break;
+			}
+
+			while (true) {
+				System.out.printf("로그인 비밀번호: ");
+				loginPw = scanner.nextLine();
+
+				if (loginPw.length() == 0) {
+					System.out.println("비밀번호를 입력해주세요.");
+					continue;
+				}
+
+				break;
+			}
+			
+			sql = new SecSql(); // SecSql 객체 초기화
+			
+			sql.append("SELECT * FROM member");
+			sql.append("WHERE loginId = ?", loginId);
+			
+			Map<String, Object> memberMap = DBUtil.selectRow(conn, sql);
+			Member member = new Member(memberMap);
+			
+			if(!member.loginPw.equals(loginPw)) {
+				System.out.println("비밀번호가 일치하지 않습니다.");
+				return 0;
+			}
+						
+			System.out.printf("%s님 환영합니다. \n", member.name);
 
 		} else if (cmd.equals("article write")) {
 			String title;

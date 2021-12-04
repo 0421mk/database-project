@@ -2,19 +2,12 @@ package com.sbs.example.board;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
 import java.util.Scanner;
 
 import com.sbs.example.board.controller.ArticleController;
 import com.sbs.example.board.controller.MemberController;
 import com.sbs.example.board.session.Session;
-import com.sbs.example.board.util.DBUtil;
-import com.sbs.example.board.util.SecSql;
 
 public class App {
 

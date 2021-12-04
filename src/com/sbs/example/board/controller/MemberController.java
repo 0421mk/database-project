@@ -1,25 +1,26 @@
 package com.sbs.example.board.controller;
 
 import java.sql.Connection;
-import java.util.Map;
 import java.util.Scanner;
 
 import com.sbs.example.board.dto.Member;
+import com.sbs.example.board.service.MemberService;
 import com.sbs.example.board.session.Session;
-import com.sbs.example.board.util.DBUtil;
-import com.sbs.example.board.util.SecSql;
 
 public class MemberController {
-	Connection conn;
+	
+	private MemberService memberService;
+	
 	Scanner scanner;
 	String cmd;
 	Session session;
 
 	public MemberController(Connection conn, Scanner scanner, String cmd, Session session) {
-		this.conn = conn;
 		this.scanner = scanner;
 		this.cmd = cmd;
 		this.session = session;
+		
+		memberService = new MemberService(conn);
 	}
 
 	public void doJoin() {
@@ -28,8 +29,6 @@ public class MemberController {
 		String loginPw;
 		String loginPwConfirm;
 		String name;
-		
-		SecSql sql;
 		
 		System.out.println("== 회원가입 ==");
 
@@ -42,13 +41,7 @@ public class MemberController {
 				continue;
 			}
 			
-			sql = new SecSql();
-			
-			sql.append("SELECT COUNT(*)");
-			sql.append("FROM member");
-			sql.append("WHERE loginId = ?", loginId);
-			
-			int memberCnt = DBUtil.selectRowIntValue(conn, sql);
+			int memberCnt = memberService.getMemberCntByLoginId(loginId);
 			
 			if(memberCnt > 0) {
 				System.out.println("이미 존재하는 아이디입니다.");
@@ -99,15 +92,7 @@ public class MemberController {
 			break;
 		}
 		
-		sql = new SecSql(); // SecSql 객체 초기화
-		sql.append("INSERT INTO member");
-		sql.append("SET regDate = NOW()");
-		sql.append(", updateDate = NOW()");
-		sql.append(", loginId = ?", loginId);
-		sql.append(", loginPw = ?", loginPw);
-		sql.append(", name = ?", name);
-		
-		DBUtil.insert(conn, sql);
+		memberService.doJoin(loginId, loginPw, name);
 					
 		System.out.printf("%s님 환영합니다. \n", name);
 		
@@ -117,8 +102,6 @@ public class MemberController {
 		
 		String loginId;
 		String loginPw;
-
-		SecSql sql;
 		
 		System.out.println("== 로그인 ==");
 
@@ -131,13 +114,7 @@ public class MemberController {
 				continue;
 			}
 			
-			sql = new SecSql();
-			
-			sql.append("SELECT COUNT(*)");
-			sql.append("FROM member");
-			sql.append("WHERE loginId = ?", loginId);
-			
-			int memberCnt = DBUtil.selectRowIntValue(conn, sql);
+			int memberCnt = memberService.getMemberCntByLoginId(loginId);
 			
 			if(memberCnt == 0) {
 				System.out.println("아이디가 존재하지 않습니다.");
@@ -159,13 +136,7 @@ public class MemberController {
 			break;
 		}
 		
-		sql = new SecSql(); // SecSql 객체 초기화
-		
-		sql.append("SELECT * FROM member");
-		sql.append("WHERE loginId = ?", loginId);
-		
-		Map<String, Object> memberMap = DBUtil.selectRow(conn, sql);
-		Member member = new Member(memberMap);
+		Member member = memberService.getArticleByLoginId(loginId);
 		
 		if(!member.loginPw.equals(loginPw)) {
 			System.out.println("비밀번호가 일치하지 않습니다.");

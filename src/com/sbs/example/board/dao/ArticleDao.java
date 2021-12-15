@@ -86,9 +86,12 @@ public class ArticleDao {
 	public Article getArticle(int id) {
 		SecSql sql = new SecSql();
 
-		sql.append("SELECT *");
-		sql.append("FROM article");
-		sql.append("WHERE id = ?", id);
+		sql.append("SELECT *, m.name AS extra_writer");
+		sql.append("FROM article AS a");
+		sql.append("LEFT JOIN `member` AS m");
+		sql.append("ON a.memberId = m.id");
+		sql.append("WHERE a.id = ?", id);
+		sql.append("ORDER BY a.id DESC");
 
 		Map<String, Object> articleMap = DBUtil.selectRow(conn, sql);
 		Article article = new Article(articleMap);

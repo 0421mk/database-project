@@ -31,13 +31,21 @@ public class MemberController {
 		String name;
 		
 		System.out.println("== 회원가입 ==");
+		
+		int joinTry = 0;
 
 		while (true) {
+			if(joinTry >= 3) {
+				System.out.println("회원가입을 다시 시도해주세요.");
+				return;
+			}
+			
 			System.out.printf("로그인 아이디: ");
 			loginId = scanner.nextLine();
 
 			if (loginId.length() == 0) {
 				System.out.println("아이디를 입력해주세요.");
+				joinTry++;
 				continue;
 			}
 			
@@ -45,21 +53,31 @@ public class MemberController {
 			
 			if(memberCnt > 0) {
 				System.out.println("이미 존재하는 아이디입니다.");
+				joinTry++;
 				continue;
 			}
 
 			break;
 		}
+		
+		joinTry = 0;
 
 		while (true) {
+			if(joinTry >= 3) {
+				System.out.println("회원가입을 다시 시도해주세요.");
+				return;
+			}
+			
 			System.out.printf("로그인 비밀번호: ");
 			loginPw = scanner.nextLine();
 
 			if (loginPw.length() == 0) {
 				System.out.println("비밀번호를 입력해주세요.");
+				joinTry++;
 				continue;
 			}
-
+			
+			// 하기 코드 부분은 루프 탈출하기가 어렵지 않음
 			while (true) {
 				System.out.printf("로그인 비밀번호 확인: ");
 				loginPwConfirm = scanner.nextLine();
@@ -74,6 +92,7 @@ public class MemberController {
 			
 			if (!loginPw.equals(loginPwConfirm)) {
 				System.out.println("입력된 비밀번호가 일치하지 않습니다.");
+				joinTry++;
 				continue;
 			}
 

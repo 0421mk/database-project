@@ -80,7 +80,7 @@ public class App {
 			
 			articleController.doWrite();
 
-		} else if (cmd.startsWith("article modify")) {
+		} else if (cmd.startsWith("article modify ")) {
 
 			articleController.doMoidfy();
 
@@ -88,11 +88,11 @@ public class App {
 
 			articleController.showList();
 
-		} else if (cmd.startsWith("article detail")) {
+		} else if (cmd.startsWith("article detail ")) {
 
 			articleController.showDetail();
 
-		} else if (cmd.startsWith("article delete")) {
+		} else if (cmd.startsWith("article delete ")) {
 
 			articleController.doDelete();
 

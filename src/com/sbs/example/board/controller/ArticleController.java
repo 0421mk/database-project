@@ -56,9 +56,16 @@ public class ArticleController {
 			System.out.println("로그인 후 이용해주세요.");
 			return;
 		}
-
+		
+		boolean isInt = cmd.split(" ")[2].matches("-?\\d+");
+		
+		if(!isInt) {
+			System.out.println("게시글의 ID를 숫자로 입력해주세요.");
+			return;
+		}
+		
 		int id = Integer.parseInt(cmd.split(" ")[2].trim());
-
+		
 		int articlesCount = articleService.getArticleCntById(id);
 
 		if (articlesCount == 0) {
@@ -107,6 +114,13 @@ public class ArticleController {
 	}
 
 	public void showDetail() {
+		
+		boolean isInt = cmd.split(" ")[2].matches("-?\\d+");
+		
+		if(!isInt) {
+			System.out.println("게시글의 ID를 숫자로 입력해주세요.");
+			return;
+		}
 
 		int id = Integer.parseInt(cmd.split(" ")[2].trim());
 
@@ -132,6 +146,13 @@ public class ArticleController {
 
 		if (session.loginedMember == null) {
 			System.out.println("로그인 후 이용해주세요.");
+			return;
+		}
+		
+		boolean isInt = cmd.split(" ")[2].matches("-?\\d+");
+		
+		if(!isInt) {
+			System.out.println("게시글의 ID를 숫자로 입력해주세요.");
 			return;
 		}
 

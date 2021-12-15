@@ -49,4 +49,10 @@ public class ArticleService {
 		
 	}
 
+	public List<Article> getArticlesByKeyword(String searchKeyword) {
+		
+		return articleDao.getArticlesByKeyword(searchKeyword);
+		
+	}
+
 }

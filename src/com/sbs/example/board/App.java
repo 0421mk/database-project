@@ -84,7 +84,7 @@ public class App {
 
 			articleController.doMoidfy();
 
-		} else if (cmd.equals("article list")) {
+		} else if (cmd.startsWith("article list")) {
 
 			articleController.showList();
 

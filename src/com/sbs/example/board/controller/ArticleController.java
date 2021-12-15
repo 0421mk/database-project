@@ -97,9 +97,18 @@ public class ArticleController {
 
 	public void showList() {
 
+		String[] cmdBits = cmd.split(" "); // 공백 체크
+		String searchKeyword = "";
+		List<Article> articles;
+		
 		System.out.println("== 게시글 목록 ==");
-
-		List<Article> articles = articleService.getArticles();
+		
+		if (cmdBits.length >= 3) {
+			searchKeyword = cmd.substring("article list ".length());
+			articles = articleService.getArticlesByKeyword(searchKeyword);
+		} else {
+			articles = articleService.getArticles();
+		}
 
 		if (articles.size() == 0) {
 			System.out.println("게시글이 존재하지 않습니다.");

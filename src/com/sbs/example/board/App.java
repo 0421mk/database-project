@@ -23,25 +23,33 @@ public class App {
 			Class.forName("com.mysql.cj.jdbc.Driver");
 			String url = "jdbc:mysql://127.0.0.1:3306/text_board?useUnicode=true&characterEncoding=utf8&autoReconnect=true&serverTimezone=Asia/Seoul&useOldAliasMetadataBehavior=true&zeroDateTimeNehavior=convertToNull";
 			conn = DriverManager.getConnection(url, "root", "");
+			
+			while (true) {
+				System.out.printf("명령어) ");
+				String cmd = scanner.nextLine();
+				cmd = cmd.trim();
+
+				int actionResult = doAction(conn, scanner, cmd, session);
+
+				if (actionResult == -1) {
+					break;
+				}
+			}
 		} catch (ClassNotFoundException e) {
 			System.out.println("드라이버 로딩 실패");
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			System.out.println("에러: " + e);
-		}
-		// DB 연결 코드
-
-		while (true) {
-			System.out.printf("명령어) ");
-			String cmd = scanner.nextLine();
-			cmd = cmd.trim();
-
-			int actionResult = doAction(conn, scanner, cmd, session);
-
-			if (actionResult == -1) {
-				break;
+		} finally {
+			try {
+				if (conn != null && !conn.isClosed()) {
+					conn.close(); // 연결 종료
+				}
+			} catch (SQLException e) {
+				e.printStackTrace();
 			}
 		}
+		// DB 연결 코드
 
 		scanner.close();
 

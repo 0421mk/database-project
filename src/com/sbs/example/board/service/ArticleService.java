@@ -55,4 +55,10 @@ public class ArticleService {
 		
 	}
 
+	public void increaseHit(int id) {
+		
+		articleDao.increaseHit(id);
+		
+	}
+
 }

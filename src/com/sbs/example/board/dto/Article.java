@@ -8,6 +8,7 @@ public class Article {
 	public LocalDateTime regDate;
 	public LocalDateTime updateDate;
 	public int memberId;
+	public int hit;
 	public String title;
 	public String body;
 	public String extra_writer; // "extra_"는 다른 테이블과 조인해서 얻은 값을 저장합니다.
@@ -17,6 +18,7 @@ public class Article {
 		this.regDate = (LocalDateTime) articleMap.get("regDate");
 		this.updateDate = (LocalDateTime) articleMap.get("updateDate");
 		this.memberId = (int) articleMap.get("memberId");
+		this.hit = (int) articleMap.get("hit");
 		this.title = (String) articleMap.get("title");
 		this.body = (String) articleMap.get("body");
 		this.extra_writer = (String) articleMap.get("extra_writer");

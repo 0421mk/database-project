@@ -139,6 +139,8 @@ public class ArticleController {
 			System.out.printf("%d번 게시글이 존재하지 않습니다.\n", id);
 			return;
 		}
+		
+		articleService.increaseHit(id);
 
 		Article article = articleService.getArticle(id);
 
@@ -146,6 +148,7 @@ public class ArticleController {
 		System.out.printf("등록날짜: %s\n", article.regDate);
 		System.out.printf("수정날짜: %s\n", article.updateDate);
 		System.out.printf("작성자: %s\n", article.extra_writer);
+		System.out.printf("조회수: %d\n", article.hit);
 		System.out.printf("제목: %s\n", article.title);
 		System.out.printf("내용: %s\n", article.body);
 

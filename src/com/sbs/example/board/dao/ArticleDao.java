@@ -58,18 +58,18 @@ public class ArticleDao {
 		
 	}
 
-	public List<Article> getArticles() {
+	public List<Article> getArticles(int limitFrom, int limitTake) {
 		
 		List<Article> articles = new ArrayList<>(); // 데이터베이스
 
 		SecSql sql = new SecSql();
-		
 		
 		sql.append("SELECT *, m.name AS extra_writer");
 		sql.append("FROM article AS a");
 		sql.append("LEFT JOIN `member` AS m");
 		sql.append("ON a.memberId = m.id"); // Select 쿼리시 DBUtil에서 쿼리 데이터 결과값에 해당하는 메소드를 적절히 사용해야 합니다.
 		sql.append("ORDER BY a.id DESC");
+		sql.append("LIMIT ?, ?", limitFrom, limitTake);
 		
 		List<Map<String, Object>> articleListMap = DBUtil.selectRows(conn, sql); // List<Article>이 사용하기 편합니다.
 		// DB에서 데이터를 받을 때는 List<Map<String, Object>> 형태가 편하고 프로그램에서 사용하기에는 List<Article>
@@ -110,12 +110,11 @@ public class ArticleDao {
 		
 	}
 
-	public List<Article> getArticlesByKeyword(String searchKeyword) {
+	public List<Article> getArticlesByKeyword(int limitFrom, int limitTake, String searchKeyword) {
 		
 		List<Article> articles = new ArrayList<>(); // 데이터베이스
 
 		SecSql sql = new SecSql();
-		
 		
 		sql.append("SELECT *, m.name AS extra_writer");
 		sql.append("FROM article AS a");
@@ -123,6 +122,7 @@ public class ArticleDao {
 		sql.append("ON a.memberId = m.id"); // Select 쿼리시 DBUtil에서 쿼리 데이터 결과값에 해당하는 메소드를 적절히 사용해야 합니다.
 		sql.append("WHERE a.title LIKE CONCAT('%', ?, '%')", searchKeyword); // 작은 따옴표를 escape하려면 하나 더 붙여주면 되는데 그러다보면 헷갈려서 CONCAT 사용
 		sql.append("ORDER BY a.id DESC");
+		sql.append("LIMIT ?, ?", limitFrom, limitTake);
 		
 		List<Map<String, Object>> articleListMap = DBUtil.selectRows(conn, sql); // List<Article>이 사용하기 편합니다.
 		// DB에서 데이터를 받을 때는 List<Map<String, Object>> 형태가 편하고 프로그램에서 사용하기에는 List<Article>
@@ -146,6 +146,18 @@ public class ArticleDao {
 
 		DBUtil.update(conn, sql);
 		
+	}
+
+	public int getArticleCnt(String searchKeyword) {
+		SecSql sql = new SecSql();
+
+		sql.append("SELECT COUNT(*)");
+		sql.append("FROM article");
+		if(searchKeyword != "") {
+			sql.append("WHERE title LIKE CONCAT('%', ?, '%')", searchKeyword);
+		}
+		
+		return DBUtil.selectRowIntValue(conn, sql);
 	}
 
 }

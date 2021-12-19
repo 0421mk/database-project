@@ -31,9 +31,12 @@ public class ArticleService {
 		
 	}
 
-	public List<Article> getArticles() {
-
-		return articleDao.getArticles();
+	public List<Article> getArticles(int page, int itemsInAPage) {
+		
+		int limitFrom = (page - 1) * itemsInAPage;
+		int limitTake = itemsInAPage;
+		
+		return articleDao.getArticles(limitFrom, limitTake);
 		
 	}
 
@@ -49,9 +52,12 @@ public class ArticleService {
 		
 	}
 
-	public List<Article> getArticlesByKeyword(String searchKeyword) {
+	public List<Article> getArticlesByKeyword(int page, int itemsInAPage, String searchKeyword) {
 		
-		return articleDao.getArticlesByKeyword(searchKeyword);
+		int limitFrom = (page - 1) * itemsInAPage;
+		int limitTake = itemsInAPage;
+		
+		return articleDao.getArticlesByKeyword(limitFrom, limitTake, searchKeyword);
 		
 	}
 
@@ -59,6 +65,11 @@ public class ArticleService {
 		
 		articleDao.increaseHit(id);
 		
+	}
+
+	public int getArticlesCnt(String searchKeyword) {
+		// TODO Auto-generated method stub
+		return articleDao.getArticleCnt(searchKeyword);
 	}
 
 }

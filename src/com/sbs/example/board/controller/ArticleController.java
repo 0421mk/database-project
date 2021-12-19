@@ -103,23 +103,55 @@ public class ArticleController {
 		
 		System.out.println("== 게시글 목록 ==");
 		
-		if (cmdBits.length >= 3) {
-			searchKeyword = cmd.substring("article list ".length());
-			articles = articleService.getArticlesByKeyword(searchKeyword);
-		} else {
-			articles = articleService.getArticles();
-		}
+		int page = 1;
+		int itemsInAPage = 5;
+		
+		while(true) {
+			// page 입력받기 때문에 마지막 페이지 초과시 게시글 없음으로 예외처리
+			// 음수 입력시 예외처리는 따로 필요
+			if (cmdBits.length >= 3) {
+				searchKeyword = cmd.substring("article list ".length());
+				articles = articleService.getArticlesByKeyword(page, itemsInAPage, searchKeyword);
+			} else {
+				articles = articleService.getArticles(page, itemsInAPage);
+			}
 
-		if (articles.size() == 0) {
-			System.out.println("게시글이 존재하지 않습니다.");
-			return;
-		}
+			if (articles.size() == 0) {
+				System.out.println("게시글이 존재하지 않습니다.");
+				return;
+			}
 
-		System.out.println("번호 / 제목 / 작성자");
-		for (Article article : articles) {
-			System.out.printf("%d / %s / %s\n", article.id, article.title, article.extra_writer);
+			System.out.println("번호 / 제목 / 작성자");
+			for (Article article : articles) {
+				System.out.printf("%d / %s / %s\n", article.id, article.title, article.extra_writer);
+			}
+			
+			int articleCnt = articleService.getArticlesCnt(searchKeyword);
+			int lastPage = (int) Math.ceil(articleCnt / (double)itemsInAPage);
+			
+			/*
+			int a = 142;
+			System.out.println(a / 100); => 1
+			System.out.println(Math.ceil(a / 100)); => 1.0
+			System.out.println(a / 100.0); => 1.42
+			System.out.println(Math.ceil(a / 100.0)); => 2.0
+			System.out.println((int) Math.ceil(a / 100.0)); => 2
+			*/
+			
+			System.out.printf("현재 페이지: %d, 마지막 페이지: %d, 전체 글 수: %d\n", page, lastPage, articleCnt);
+			System.out.printf("== [페이지 이동] 번호, [종료] 0 미만의 수 입력 ==\n");
+			
+			System.out.printf("[article list] 명령어) ");
+			page = scanner.nextInt();
+			
+			scanner.nextLine(); // 입력 버퍼 \n 이 남아있으므로 비워줍니다.
+			
+			if(page <= 0) {
+				System.out.println("게시판 조회를 종료합니다.");
+				break;
+			}
 		}
-
+	
 	}
 
 	public void showDetail() {

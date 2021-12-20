@@ -26,6 +26,8 @@ public class ArticleDao {
 		sql.append(", memberId = ?", loginedMemberId);
 		sql.append(", title = ?", title);
 		sql.append(", body = ?", body);
+		sql.append(", hit = 0");
+		// 조회수 기능 구현 후 쿼리 수정
 
 		int id = DBUtil.insert(conn, sql);
 		
@@ -48,8 +50,7 @@ public class ArticleDao {
 		SecSql sql = new SecSql();
 
 		sql.append("UPDATE article");
-		sql.append("SET regDate = NOW()");
-		sql.append(", updateDate = NOW()");
+		sql.append("SET updateDate = NOW()");
 		sql.append(", title = ?", title);
 		sql.append(", body = ?", body);
 		sql.append("WHERE id = ?", id);

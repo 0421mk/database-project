@@ -8,10 +8,9 @@ import com.sbs.example.board.dto.Article;
 import com.sbs.example.board.service.ArticleService;
 import com.sbs.example.board.session.Session;
 
-public class ArticleController {
+public class ArticleController extends Controller {
 
 	private ArticleService articleService;
-
 	private Scanner scanner;
 	private String cmd;
 	private Session session;
@@ -26,6 +25,24 @@ public class ArticleController {
 		this.session = session;
 
 		articleService = new ArticleService(conn);
+	}
+
+	@Override
+	public void doAction() {
+
+		if (cmd.equals("article write")) {
+			doWrite();
+		} else if (cmd.startsWith("article modify ")) {
+			doMoidfy();
+		} else if (cmd.startsWith("article list")) {
+			showList();
+		} else if (cmd.startsWith("article detail ")) {
+			showDetail();
+		} else if (cmd.startsWith("article delete ")) {
+			doDelete();
+		} else {
+			System.out.println("존재하지 않는 명령어입니다.");
+		}
 	}
 
 	public void doWrite() {
@@ -56,16 +73,16 @@ public class ArticleController {
 			System.out.println("로그인 후 이용해주세요.");
 			return;
 		}
-		
+
 		boolean isInt = cmd.split(" ")[2].matches("-?\\d+");
-		
-		if(!isInt) {
+
+		if (!isInt) {
 			System.out.println("게시글의 ID를 숫자로 입력해주세요.");
 			return;
 		}
-		
+
 		int id = Integer.parseInt(cmd.split(" ")[2].trim());
-		
+
 		int articlesCount = articleService.getArticleCntById(id);
 
 		if (articlesCount == 0) {
@@ -100,13 +117,13 @@ public class ArticleController {
 		String[] cmdBits = cmd.split(" "); // 공백 체크
 		String searchKeyword = "";
 		List<Article> articles;
-		
+
 		System.out.println("== 게시글 목록 ==");
-		
+
 		int page = 1;
 		int itemsInAPage = 5;
-		
-		while(true) {
+
+		while (true) {
 			// page 입력받기 때문에 마지막 페이지 초과시 게시글 없음으로 예외처리
 			// 음수 입력시 예외처리는 따로 필요
 			if (cmdBits.length >= 3) {
@@ -125,40 +142,38 @@ public class ArticleController {
 			for (Article article : articles) {
 				System.out.printf("%d / %s / %s\n", article.id, article.title, article.extra_writer);
 			}
-			
+
 			int articleCnt = articleService.getArticlesCnt(searchKeyword);
-			int lastPage = (int) Math.ceil(articleCnt / (double)itemsInAPage);
-			
+			int lastPage = (int) Math.ceil(articleCnt / (double) itemsInAPage);
+
 			/*
-			int a = 142;
-			System.out.println(a / 100); => 1
-			System.out.println(Math.ceil(a / 100)); => 1.0
-			System.out.println(a / 100.0); => 1.42
-			System.out.println(Math.ceil(a / 100.0)); => 2.0
-			System.out.println((int) Math.ceil(a / 100.0)); => 2
-			*/
-			
+			 * int a = 142; System.out.println(a / 100); => 1 System.out.println(Math.ceil(a
+			 * / 100)); => 1.0 System.out.println(a / 100.0); => 1.42
+			 * System.out.println(Math.ceil(a / 100.0)); => 2.0 System.out.println((int)
+			 * Math.ceil(a / 100.0)); => 2
+			 */
+
 			System.out.printf("현재 페이지: %d, 마지막 페이지: %d, 전체 글 수: %d\n", page, lastPage, articleCnt);
 			System.out.printf("== [페이지 이동] 번호, [종료] 0 미만의 수 입력 ==\n");
-			
+
 			System.out.printf("[article list] 명령어) ");
 			page = scanner.nextInt();
-			
+
 			scanner.nextLine(); // 입력 버퍼 \n 이 남아있으므로 비워줍니다.
-			
-			if(page <= 0) {
+
+			if (page <= 0) {
 				System.out.println("게시판 조회를 종료합니다.");
 				break;
 			}
 		}
-	
+
 	}
 
 	public void showDetail() {
-		
+
 		boolean isInt = cmd.split(" ")[2].matches("-?\\d+");
-		
-		if(!isInt) {
+
+		if (!isInt) {
 			System.out.println("게시글의 ID를 숫자로 입력해주세요.");
 			return;
 		}
@@ -171,7 +186,7 @@ public class ArticleController {
 			System.out.printf("%d번 게시글이 존재하지 않습니다.\n", id);
 			return;
 		}
-		
+
 		articleService.increaseHit(id);
 
 		Article article = articleService.getArticle(id);
@@ -192,10 +207,10 @@ public class ArticleController {
 			System.out.println("로그인 후 이용해주세요.");
 			return;
 		}
-		
+
 		boolean isInt = cmd.split(" ")[2].matches("-?\\d+");
-		
-		if(!isInt) {
+
+		if (!isInt) {
 			System.out.println("게시글의 ID를 숫자로 입력해주세요.");
 			return;
 		}

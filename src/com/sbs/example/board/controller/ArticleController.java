@@ -47,7 +47,7 @@ public class ArticleController extends Controller {
 
 	public void doWrite() {
 
-		if (session.loginedMember == null) {
+		if (session.getLoginedMember() == null) {
 			System.out.println("로그인 후 이용해주세요.");
 			return;
 		}
@@ -61,7 +61,7 @@ public class ArticleController extends Controller {
 		System.out.printf("내용: ");
 		body = scanner.nextLine();
 
-		int id = articleService.doWrite(title, body, session.loginedMemberId);
+		int id = articleService.doWrite(title, body, session.getLoginedMemberId());
 
 		System.out.printf("%d번 게시물이 생성되었습니다. \n", id);
 
@@ -69,7 +69,7 @@ public class ArticleController extends Controller {
 
 	public void doMoidfy() {
 
-		if (session.loginedMember == null) {
+		if (session.getLoginedMember() == null) {
 			System.out.println("로그인 후 이용해주세요.");
 			return;
 		}
@@ -92,7 +92,7 @@ public class ArticleController extends Controller {
 
 		Article article = articleService.getArticle(id);
 
-		if (article.memberId != session.loginedMemberId) {
+		if (article.memberId != session.getLoginedMemberId()) {
 			System.out.println("권한이 없습니다.");
 			return;
 		}
@@ -203,7 +203,7 @@ public class ArticleController extends Controller {
 
 	public void doDelete() {
 
-		if (session.loginedMember == null) {
+		if (session.getLoginedMember() == null) {
 			System.out.println("로그인 후 이용해주세요.");
 			return;
 		}
@@ -228,7 +228,7 @@ public class ArticleController extends Controller {
 
 		Article article = articleService.getArticle(id);
 
-		if (article.memberId != session.loginedMemberId) {
+		if (article.memberId != session.getLoginedMemberId()) {
 			System.out.println("권한이 없습니다.");
 			return;
 		}

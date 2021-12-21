@@ -219,4 +219,16 @@ public class ArticleDao {
 		
 	}
 
+	public void deleteLike(int id, int loginedMemberId) {
+		
+		SecSql sql = new SecSql();
+
+		sql.append("DELETE FROM `like`");
+		sql.append("WHERE articleId = ?", id);
+		sql.append("AND memberId = ?", loginedMemberId);
+
+		DBUtil.delete(conn, sql);
+		
+	}
+
 }

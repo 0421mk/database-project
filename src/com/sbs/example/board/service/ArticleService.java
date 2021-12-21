@@ -93,4 +93,10 @@ public class ArticleService {
 		return articleDao.getLikeVal(id, likeType);
 	}
 
+	public void deleteLike(int id, int loginedMemberId) {
+		
+		articleDao.deleteLike(id, loginedMemberId);
+		
+	}
+
 }

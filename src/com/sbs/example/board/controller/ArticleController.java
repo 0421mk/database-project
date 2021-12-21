@@ -71,12 +71,16 @@ public class ArticleController extends Controller {
 		}
 		
 		System.out.println("== 게시글 추천/비추천 ==");
-		System.out.printf(">> [추천] 1, [비추천] 2 <<\n");
+		System.out.printf(">> [추천] 1, [비추천] 2, [해제] 3, [나가기] 0 <<\n");
 
 		System.out.printf("[article like] 명령어) ");
 		int likeType = scanner.nextInt();
 		
 		scanner.nextLine(); // 입력 버퍼 \n 이 남아있으므로 비워줍니다.
+		
+		if(likeType == 0) {
+			return;
+		}
 		
 		// 이미 추천/반대 했는지 여부 확인
 		// 했다면 추천/반대 값을 리턴받음
@@ -89,10 +93,18 @@ public class ArticleController extends Controller {
 				
 				String msg = (likeType == 1 ? "추천" : "비추천");
 				System.out.println(msg + " 완료");
+			} else if(likeType == 3) {
+				System.out.println("해제할 추천/반대가 존재하지 않습니다.");
 			} else {
 				System.out.println("1 또는 2의 숫자만 입력해주세요.");
 			}
 		} else {
+			if(likeType == 3) {
+				articleService.deleteLike(id, session.getLoginedMemberId());
+				System.out.println("추천/반대를 해제합니다.");
+				return;
+			}
+			
 			if(likeType == likeCheckCnt) {
 				String msg = (likeType == 1 ? "추천" : "비추천");
 				System.out.println("이미 " + msg + "하였습니다.");

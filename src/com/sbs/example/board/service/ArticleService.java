@@ -68,7 +68,6 @@ public class ArticleService {
 	}
 
 	public int getArticlesCnt(String searchKeyword) {
-		// TODO Auto-generated method stub
 		return articleDao.getArticleCnt(searchKeyword);
 	}
 
@@ -88,6 +87,10 @@ public class ArticleService {
 		
 		articleDao.modifyLike(id, likeType, loginedMemberId);
 		
+	}
+
+	public int getLikeVal(int id, int likeType) {
+		return articleDao.getLikeVal(id, likeType);
 	}
 
 }

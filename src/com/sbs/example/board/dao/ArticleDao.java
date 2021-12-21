@@ -204,4 +204,19 @@ public class ArticleDao {
 		
 	}
 
+	public int getLikeVal(int id, int likeType) {
+
+		SecSql sql = new SecSql();
+
+		// 해당 글의 추천수와 반대수 가져오기
+		sql.append("SELECT *, COUNT(likeType) AS likeCnt");
+		sql.append("FROM `like`");
+		sql.append("GROUP BY likeType");
+		sql.append("HAVING articleId = ? AND likeType = ?", id, likeType);
+		
+		Map<String, Object> likeMap = DBUtil.selectRow(conn, sql);
+		return (int) likeMap.get("likeCnt");
+		
+	}
+
 }

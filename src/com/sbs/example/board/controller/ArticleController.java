@@ -167,7 +167,7 @@ public class ArticleController extends Controller {
 
 		Article article = articleService.getArticle(id);
 
-		if (article.memberId != session.getLoginedMemberId()) {
+		if (article.getMemberId() != session.getLoginedMemberId()) {
 			System.out.println("권한이 없습니다.");
 			return;
 		}
@@ -215,7 +215,7 @@ public class ArticleController extends Controller {
 
 			System.out.println("번호 / 제목 / 작성자");
 			for (Article article : articles) {
-				System.out.printf("%d / %s / %s\n", article.id, article.title, article.extra_writer);
+				System.out.printf("%d / %s / %s\n", article.getId(), article.getTitle(), article.getExtra_writer());
 			}
 
 			int articleCnt = articleService.getArticlesCnt(searchKeyword);
@@ -268,15 +268,15 @@ public class ArticleController extends Controller {
 		int likeVal = articleService.getLikeVal(id, 1);
 		int disLikeVal = articleService.getLikeVal(id, 2);
 
-		System.out.printf("번호: %d\n", article.id);
-		System.out.printf("등록날짜: %s\n", article.regDate);
-		System.out.printf("수정날짜: %s\n", article.updateDate);
-		System.out.printf("작성자: %s\n", article.extra_writer);
-		System.out.printf("조회수: %d\n", article.hit);
+		System.out.printf("번호: %d\n", article.getId());
+		System.out.printf("등록날짜: %s\n", article.getRegDate());
+		System.out.printf("수정날짜: %s\n", article.getUpdateDate());
+		System.out.printf("작성자: %s\n", article.getExtra_writer());
+		System.out.printf("조회수: %d\n", article.getHit());
 		System.out.printf("추천수: %d\n", likeVal);
 		System.out.printf("반대수: %d\n", disLikeVal);
-		System.out.printf("제목: %s\n", article.title);
-		System.out.printf("내용: %s\n", article.body);
+		System.out.printf("제목: %s\n", article.getTitle());
+		System.out.printf("내용: %s\n", article.getBody());
 
 	}
 
@@ -307,7 +307,7 @@ public class ArticleController extends Controller {
 
 		Article article = articleService.getArticle(id);
 
-		if (article.memberId != session.getLoginedMemberId()) {
+		if (article.getMemberId() != session.getLoginedMemberId()) {
 			System.out.println("권한이 없습니다.");
 			return;
 		}

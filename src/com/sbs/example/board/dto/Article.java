@@ -4,14 +4,78 @@ import java.time.LocalDateTime;
 import java.util.Map;
 
 public class Article {
-	public int id;
-	public LocalDateTime regDate;
-	public LocalDateTime updateDate;
-	public int memberId;
-	public int hit;
-	public String title;
-	public String body;
-	public String extra_writer; // "extra_"는 다른 테이블과 조인해서 얻은 값을 저장합니다.
+	private int id;
+	private LocalDateTime regDate;
+	private LocalDateTime updateDate;
+	private int memberId;
+	private int hit;
+	private String title;
+	public int getId() {
+		return id;
+	}
+
+	public void setId(int id) {
+		this.id = id;
+	}
+
+	public LocalDateTime getRegDate() {
+		return regDate;
+	}
+
+	public void setRegDate(LocalDateTime regDate) {
+		this.regDate = regDate;
+	}
+
+	public LocalDateTime getUpdateDate() {
+		return updateDate;
+	}
+
+	public void setUpdateDate(LocalDateTime updateDate) {
+		this.updateDate = updateDate;
+	}
+
+	public int getMemberId() {
+		return memberId;
+	}
+
+	public void setMemberId(int memberId) {
+		this.memberId = memberId;
+	}
+
+	public int getHit() {
+		return hit;
+	}
+
+	public void setHit(int hit) {
+		this.hit = hit;
+	}
+
+	public String getTitle() {
+		return title;
+	}
+
+	public void setTitle(String title) {
+		this.title = title;
+	}
+
+	public String getBody() {
+		return body;
+	}
+
+	public void setBody(String body) {
+		this.body = body;
+	}
+
+	public String getExtra_writer() {
+		return extra_writer;
+	}
+
+	public void setExtra_writer(String extra_writer) {
+		this.extra_writer = extra_writer;
+	}
+
+	private String body;
+	private String extra_writer; // "extra_"는 다른 테이블과 조인해서 얻은 값을 저장합니다.
 
 	public Article(Map<String, Object> articleMap) {
 		this.id = (int) articleMap.get("id");

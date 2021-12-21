@@ -11,9 +11,9 @@ public class MemberController extends Controller {
 
 	private MemberService memberService;
 
-	Scanner scanner;
-	String cmd;
-	Session session;
+	private Scanner scanner;
+	private String cmd;
+	private Session session;
 
 	public MemberController(Connection conn, Scanner scanner, String cmd, Session session) {
 		this.scanner = scanner;
@@ -38,7 +38,7 @@ public class MemberController extends Controller {
 		}
 	}
 
-	public void doJoin() {
+	private void doJoin() {
 
 		String loginId;
 		String loginPw;
@@ -132,7 +132,7 @@ public class MemberController extends Controller {
 
 	}
 
-	public void doLogin() {
+	private void doLogin() {
 
 		if (session.getLoginedMemberId() != -1) {
 			System.out.println("로그아웃 후 이용해주세요.");
@@ -193,7 +193,7 @@ public class MemberController extends Controller {
 
 			member = memberService.getArticleByLoginId(loginId);
 
-			if (!member.loginPw.equals(loginPw)) {
+			if (!member.getLoginPw().equals(loginPw)) {
 				System.out.println("비밀번호가 일치하지 않습니다.");
 				loginTry++;
 				continue;
@@ -202,15 +202,15 @@ public class MemberController extends Controller {
 			break;
 		}
 
-		System.out.printf("%s님 환영합니다. \n", member.name);
+		System.out.printf("%s님 환영합니다. \n", member.getName());
 
 		// 로그인 처리
-		session.setLoginedMemberId(member.id);
+		session.setLoginedMemberId(member.getId());
 		session.setLoginedMember(member);
 
 	}
 
-	public void doLogout() {
+	private void doLogout() {
 
 		if (session.getLoginedMember() == null) {
 			System.out.println("로그인 후 이용해주세요.");
@@ -224,13 +224,13 @@ public class MemberController extends Controller {
 
 	}
 
-	public void whoami() {
+	private void whoami() {
 
 		if (session.getLoginedMember() == null) {
 			System.out.println("로그인 유저가 없습니다.");
 			return;
 		}
-		System.out.printf("현재 로그인 유저: %s\n", session.getLoginedMember().name);
+		System.out.printf("현재 로그인 유저: %s\n", session.getLoginedMember().getName());
 
 	}
 

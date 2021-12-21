@@ -207,30 +207,13 @@ public class ArticleDao {
 	public int getLikeVal(int id, int likeType) {
 
 		SecSql sql = new SecSql();
-		
-		sql.append("SELECT");
-		sql.append("CASE WHEN COUNT(*) != 0 THEN COUNT(*) ELSE 0");
-		sql.append("END AS likeCnt");
-		sql.append("FROM `like`");
-		sql.append("WHERE articleId = ?", id);
-		
-		int likeCnt = DBUtil.selectRowIntValue(conn, sql);
-		
-		if(likeCnt == 0) {
-			return 0;
-		} else {
-			sql = new SecSql();
 
-			// 해당 글의 추천수와 반대수 가져오기
-			sql.append("SELECT *, COUNT(likeType) AS likeCnt");
-			sql.append("FROM `like`");
-			sql.append("GROUP BY likeType");
-			sql.append("HAVING articleId = ? AND likeType = ?", id, likeType);
-			
-			Map<String, Object> likeMap = DBUtil.selectRow(conn, sql);
-			
-			return (int) likeMap.get("likeCnt");
-		}
+		// 해당 글의 추천수와 반대수 가져오기
+		sql.append("SELECT COUNT(*)");
+		sql.append("FROM `like`");
+		sql.append("WHERE articleId = ? AND likeType = ?", id, likeType);
+		
+		return DBUtil.selectRowIntValue(conn, sql);
 		
 	}
 

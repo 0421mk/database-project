@@ -54,6 +54,7 @@ public class App {
 					controller = memberController;
 				} else {
 					System.out.println("잘못된 명령어입니다.");
+					continue;
 				}
 				
 				controller.doAction();

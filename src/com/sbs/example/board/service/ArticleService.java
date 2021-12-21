@@ -72,4 +72,22 @@ public class ArticleService {
 		return articleDao.getArticleCnt(searchKeyword);
 	}
 
+	public void insertLike(int id, int likeType, int loginedMemberId) {
+		
+		articleDao.insertLike(id, likeType, loginedMemberId);
+		
+	}
+
+	public int likeCheck(int id, int loginedMemberId) {
+		
+		return articleDao.likeCheck(id, loginedMemberId);
+		
+	}
+
+	public void modifyLike(int id, int likeType, int loginedMemberId) {
+		
+		articleDao.modifyLike(id, likeType, loginedMemberId);
+		
+	}
+
 }

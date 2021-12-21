@@ -40,12 +40,75 @@ public class ArticleController extends Controller {
 			showDetail();
 		} else if (cmd.startsWith("article delete ")) {
 			doDelete();
+		} else if (cmd.startsWith("article like ")) {
+			doLike();
 		} else {
 			System.out.println("존재하지 않는 명령어입니다.");
 		}
 	}
 
-	public void doWrite() {
+	private void doLike() {
+		
+		if (session.getLoginedMember() == null) {
+			System.out.println("로그인 후 이용해주세요.");
+			return;
+		}
+
+		boolean isInt = cmd.split(" ")[2].matches("-?\\d+");
+
+		if (!isInt) {
+			System.out.println("게시글의 ID를 숫자로 입력해주세요.");
+			return;
+		}
+
+		int id = Integer.parseInt(cmd.split(" ")[2].trim());
+
+		int articlesCount = articleService.getArticleCntById(id);
+
+		if (articlesCount == 0) {
+			System.out.printf("%d번 게시글이 존재하지 않습니다.\n", id);
+			return;
+		}
+		
+		System.out.println("== 게시글 추천/비추천 ==");
+		System.out.printf(">> [추천] 1, [비추천] 2 <<\n");
+
+		System.out.printf("[article like] 명령어) ");
+		int likeType = scanner.nextInt();
+		
+		scanner.nextLine(); // 입력 버퍼 \n 이 남아있으므로 비워줍니다.
+		
+		// 이미 추천/반대 했는지 여부 확인
+		// 했다면 추천/반대 값을 리턴받음
+		// 안했다면 0을 리턴받음
+		int likeCheckCnt = articleService.likeCheck(id, session.getLoginedMemberId());
+		
+		if(likeCheckCnt == 0) {
+			if(likeType == 1 || likeType == 2) {
+				articleService.insertLike(id, likeType, session.getLoginedMemberId());
+				
+				String msg = (likeType == 1 ? "추천" : "비추천");
+				System.out.println(msg + " 완료");
+			} else {
+				System.out.println("1 또는 2의 숫자만 입력해주세요.");
+			}
+		} else {
+			if(likeType == likeCheckCnt) {
+				String msg = (likeType == 1 ? "추천" : "비추천");
+				System.out.println("이미 " + msg + "하였습니다.");
+				return;
+			} else {
+				// modify
+				articleService.modifyLike(id, likeType, session.getLoginedMemberId());
+				
+				String msg = (likeType == 1 ? "추천" : "비추천");
+				System.out.println(msg + "으로 변경 완료");
+			}
+		}
+		
+	}
+
+	private void doWrite() {
 
 		if (session.getLoginedMember() == null) {
 			System.out.println("로그인 후 이용해주세요.");
@@ -67,7 +130,7 @@ public class ArticleController extends Controller {
 
 	}
 
-	public void doMoidfy() {
+	private void doMoidfy() {
 
 		if (session.getLoginedMember() == null) {
 			System.out.println("로그인 후 이용해주세요.");
@@ -112,7 +175,7 @@ public class ArticleController extends Controller {
 
 	}
 
-	public void showList() {
+	private void showList() {
 
 		String[] cmdBits = cmd.split(" "); // 공백 체크
 		String searchKeyword = "";
@@ -154,7 +217,7 @@ public class ArticleController extends Controller {
 			 */
 
 			System.out.printf("현재 페이지: %d, 마지막 페이지: %d, 전체 글 수: %d\n", page, lastPage, articleCnt);
-			System.out.printf("== [페이지 이동] 번호, [종료] 0 미만의 수 입력 ==\n");
+			System.out.printf(">> [페이지 이동] 번호, [종료] 0 미만의 수 입력 <<\n");
 
 			System.out.printf("[article list] 명령어) ");
 			page = scanner.nextInt();
@@ -169,7 +232,7 @@ public class ArticleController extends Controller {
 
 	}
 
-	public void showDetail() {
+	private void showDetail() {
 
 		boolean isInt = cmd.split(" ")[2].matches("-?\\d+");
 
@@ -201,7 +264,7 @@ public class ArticleController extends Controller {
 
 	}
 
-	public void doDelete() {
+	private void doDelete() {
 
 		if (session.getLoginedMember() == null) {
 			System.out.println("로그인 후 이용해주세요.");

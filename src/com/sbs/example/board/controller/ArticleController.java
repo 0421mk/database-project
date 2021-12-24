@@ -148,7 +148,7 @@ public class ArticleController extends Controller {
 				}
 
 				// 수정할 댓글이 있는지?
-				int commentCnt = articleService.getCommentCntById(commentId);
+				int commentCnt = articleService.getCommentCntById(commentId, id);
 
 				if (commentCnt == 0) {
 					System.out.println("수정할 댓글이 존재하지 않습니다.");
@@ -239,7 +239,7 @@ public class ArticleController extends Controller {
 				}
 
 				// 삭제할 댓글이 있는지?
-				int commentCnt = articleService.getCommentCntById(commentId);
+				int commentCnt = articleService.getCommentCntById(commentId, id);
 
 				if (commentCnt == 0) {
 					System.out.println("삭제할 댓글이 존재하지 않습니다.");
@@ -455,7 +455,7 @@ public class ArticleController extends Controller {
 			// 예외 처리
 			while (true) {
 				try {
-					System.out.printf("[article comment] 명령어) ");
+					System.out.printf("[article list] 명령어) ");
 
 					// scanner 객체를 재생성해줘야 합니다.
 					// 예외로 인해 catch 방문하면 객체 사라지기 때문에 오류뜹니다.

@@ -271,13 +271,13 @@ public class ArticleDao {
 		
 	}
 
-	public int getCommentCntById(int commentId) {
+	public int getCommentCntById(int commentId, int id) {
 		
 		SecSql sql = new SecSql();
 		
 		sql.append("SELECT COUNT(*)");
 		sql.append("FROM `comment`");
-		sql.append("WHERE id = ?", commentId);
+		sql.append("WHERE id = ? AND articleId = ?", commentId, id);
 		
 		return DBUtil.selectRowIntValue(conn, sql);
 		

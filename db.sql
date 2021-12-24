@@ -109,3 +109,36 @@ FROM `like`
 WHERE articleId = 3 AND likeType = 2;
 
 SELECT * FROM article;
+
+CREATE TABLE `comment` (
+    id INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,
+    PRIMARY KEY(id),
+    regDate DATETIME NOT NULL,
+    updateDate DATETIME NOT NULL,
+    articleId INT(10) UNSIGNED NOT NULL,
+    memberId INT(10) UNSIGNED NOT NULL,
+    title CHAR(100) NOT NULL,
+    `body` CHAR(100) NOT NULL
+);
+
+DESC `comment`;
+
+SELECT c.*, m.name AS extra_writer
+FROM `comment` AS c
+INNER JOIN `member` AS m
+ON c.memberId = m.id
+WHERE articleId = 7;
+
+SELECT *
+FROM `comment`;
+
+SELECT COUNT(*)
+FROM `comment`
+WHERE id = 1;
+
+SELECT *
+FROM `comment`
+WHERE id = 1;
+
+SELECT *
+FROM `member`;

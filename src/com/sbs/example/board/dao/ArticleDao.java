@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.sbs.example.board.dto.Article;
+import com.sbs.example.board.dto.Comment;
 import com.sbs.example.board.util.DBUtil;
 import com.sbs.example.board.util.SecSql;
 
@@ -227,6 +228,139 @@ public class ArticleDao {
 
 		DBUtil.delete(conn, sql);
 		
+	}
+
+	public int writeComment(int id, String title, String body, int loginedMemberId) {
+		
+		SecSql sql = new SecSql();
+		
+		sql.append("INSERT INTO comment");
+		sql.append("SET regDate = NOW()");
+		sql.append(", updateDate = NOW()");
+		sql.append(", articleId = ?", id);
+		sql.append(", memberId = ?", loginedMemberId);
+		sql.append(", title = ?", title);
+		sql.append(", body = ?", body);
+		// 조회수 기능 구현 후 쿼리 수정
+		
+		return DBUtil.insert(conn, sql);
+		
+	}
+
+	public List<Comment> getCommentsById(int id) {
+		
+		SecSql sql = new SecSql();
+		
+		sql.append("SELECT c.*, m.name AS extra_writer");
+		sql.append("FROM `comment` AS c");
+		sql.append("INNER JOIN `member` AS m");
+		sql.append("ON c.memberId = m.id");
+		sql.append("WHERE articleId = ?", id);
+		
+		List<Map<String, Object>> commentListMap = DBUtil.selectRows(conn, sql); // List<Article>이 사용하기 편합니다.
+		// DB에서 데이터를 받을 때는 List<Map<String, Object>> 형태가 편하고 프로그램에서 사용하기에는 List<Article>
+		// 형태가 편합니다.
+
+		List<Comment> comments = new ArrayList<>(); // 데이터베이스
+		
+		for (Map<String, Object> commentMap : commentListMap) {
+			comments.add(new Comment(commentMap));
+		}
+		
+		return comments;
+		
+	}
+
+	public int getCommentCntById(int commentId) {
+		
+		SecSql sql = new SecSql();
+		
+		sql.append("SELECT COUNT(*)");
+		sql.append("FROM `comment`");
+		sql.append("WHERE id = ?", commentId);
+		
+		return DBUtil.selectRowIntValue(conn, sql);
+		
+	}
+
+	public Comment getCommentById(int commentId) {
+		
+		SecSql sql = new SecSql();
+		
+		sql.append("SELECT *");
+		sql.append("FROM `comment`");
+		sql.append("WHERE id = ?", commentId);
+		
+		Map<String, Object> commentMap = DBUtil.selectRow(conn, sql); // List<Article>이 사용하기 편합니다.
+		// DB에서 데이터를 받을 때는 List<Map<String, Object>> 형태가 편하고 프로그램에서 사용하기에는 List<Article>
+		// 형태가 편합니다.
+		
+		return new Comment(commentMap);
+		
+	}
+
+	public void modifyComment(int commentId, String title, String body) {
+		
+		SecSql sql = new SecSql();
+				
+		sql.append("UPDATE `comment`");
+		sql.append("SET updateDate = NOW()");
+		sql.append(", title = ?", title);
+		sql.append(", body = ?", body);
+		sql.append("WHERE id = ?", commentId);
+		// 조회수 기능 구현 후 쿼리 수정
+		
+		DBUtil.update(conn, sql);
+		
+	}
+
+	public void deleteComment(int commentId) {
+		
+		SecSql sql = new SecSql();
+		
+		sql.append("DELETE FROM `comment`");
+		sql.append("WHERE id = ?", commentId);
+		// 조회수 기능 구현 후 쿼리 수정
+		
+		DBUtil.delete(conn, sql);
+		
+	}
+
+	public List<Comment> getCommentsByPage(int id, int limitFrom, int limitTake) {
+		
+		SecSql sql = new SecSql();
+		
+		sql.append("SELECT c.*, m.name AS extra_writer");
+		sql.append("FROM `comment` AS c");
+		sql.append("INNER JOIN `member` AS m");
+		sql.append("ON c.memberId = m.id");
+		sql.append("WHERE articleId = ?", id);
+		sql.append("LIMIT ?, ?", limitFrom, limitTake);
+		
+		List<Map<String, Object>> commentListMap = DBUtil.selectRows(conn, sql); // List<Article>이 사용하기 편합니다.
+		// DB에서 데이터를 받을 때는 List<Map<String, Object>> 형태가 편하고 프로그램에서 사용하기에는 List<Article>
+		// 형태가 편합니다.
+
+		List<Comment> comments = new ArrayList<>(); // 데이터베이스
+		
+		for (Map<String, Object> commentMap : commentListMap) {
+			comments.add(new Comment(commentMap));
+		}
+		
+		return comments;
+		
+	}
+
+	public int getCommentsCnt(int id) {
+		
+		SecSql sql = new SecSql();
+		
+		sql.append("SELECT COUNT(*) FROM `comment`");
+		sql.append("WHERE articleId = ?", id);
+		
+		int count = DBUtil.selectRowIntValue(conn, sql);
+		
+		return count;
 	}
 
 }

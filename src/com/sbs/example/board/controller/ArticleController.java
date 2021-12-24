@@ -86,7 +86,7 @@ public class ArticleController extends Controller {
 				System.out.printf("[%d] 작성자: %s, 제목: %s, 내용: %s\n", comment.getId(), comment.getExtra_writer(),
 						comment.getTitle(), comment.getBody());
 			}
-			
+
 			System.out.printf(">> [글쓰기] 1, [수정하기] 2, [페이징] 3, [삭제] 4, [나가기] 0 <<\n");
 
 			int commentType;
@@ -95,7 +95,7 @@ public class ArticleController extends Controller {
 			while (true) {
 				try {
 					System.out.printf("[article comment] 명령어) ");
-					
+
 					// scanner 객체를 재생성해줘야 합니다.
 					// 예외로 인해 catch 방문하면 객체 사라지기 때문에 오류뜹니다.
 					commentType = new Scanner(System.in).nextInt();
@@ -111,7 +111,7 @@ public class ArticleController extends Controller {
 				return;
 			} else if (commentType == 1) {
 				// 댓글 작성
-				
+
 				System.out.println("== 댓글 작성 ==");
 				System.out.printf("댓글 제목: ");
 				String title = scanner.nextLine();
@@ -124,14 +124,14 @@ public class ArticleController extends Controller {
 
 			} else if (commentType == 2) {
 				// 댓글 수정
-				
+
 				// 수정할 댓글 존재 X
 				// 수정할 권한 존재 X
 
 				System.out.println("== 댓글 수정 ==");
 
 				int commentId;
-				
+
 				while (true) {
 					try {
 						System.out.printf(">> [수정할 댓글의 id], [취소] 0 <<) ");
@@ -142,8 +142,8 @@ public class ArticleController extends Controller {
 						System.out.println("정상적인 숫자를 입력해주세요.");
 					}
 				}
-				
-				if(commentId == 0) {
+
+				if (commentId == 0) {
 					continue;
 				}
 
@@ -167,7 +167,7 @@ public class ArticleController extends Controller {
 				String title = scanner.nextLine();
 				System.out.printf("새 댓글 내용: ");
 				String body = scanner.nextLine();
-				
+
 				articleService.modifyComment(commentId, title, body);
 
 				System.out.printf("%d번 게시글에 %d번 댓글이 수정되었습니다. \n", id, commentId);
@@ -182,26 +182,27 @@ public class ArticleController extends Controller {
 
 				int page = 1;
 				int itemsInAPage = 10;
-				
-				while(true) {
+
+				while (true) {
 					// 현재 게시물 id에 해당하는 댓글 리스트 가져오기
 					List<Comment> pageComments = articleService.getCommentsByPage(id, page, itemsInAPage);
-					
+
 					if (pageComments.size() == 0) {
 						System.out.println("댓글이 존재하지 않습니다.");
 						break;
 					}
-					
+
 					for (Comment comment : pageComments) {
 						System.out.printf("[%d] 작성자: %s, 제목: %s, 내용: %s\n", comment.getId(), comment.getExtra_writer(),
 								comment.getTitle(), comment.getBody());
 					}
-					
+
 					// 해당하는 글에 대한 댓글 수 반환
 					int commentsCnt = articleService.getCommentsCnt(id);
 					int lastCommentPage = (int) Math.ceil(commentsCnt / (double) itemsInAPage);
 
-					System.out.printf("현재 댓글 페이지: %d, 마지막 댓글 페이지: %d, 전체 댓글 수: %d\n", page, lastCommentPage, commentsCnt);
+					System.out.printf("현재 댓글 페이지: %d, 마지막 댓글 페이지: %d, 전체 댓글 수: %d\n", page, lastCommentPage,
+							commentsCnt);
 					System.out.printf(">> [댓글 페이지 이동] 번호, [종료] 0 미만의 수 입력 <<\n");
 
 					System.out.printf("[article comment page] 명령어) ");
@@ -217,11 +218,11 @@ public class ArticleController extends Controller {
 
 			} else if (commentType == 4) {
 				// 댓글 삭제
-				
+
 				System.out.println("== 댓글 삭제 ==");
 
 				int commentId;
-				
+
 				while (true) {
 					try {
 						System.out.printf(">> [삭제할 댓글의 id], [취소] 0 <<) ");
@@ -232,8 +233,8 @@ public class ArticleController extends Controller {
 						System.out.println("정상적인 숫자를 입력해주세요.");
 					}
 				}
-				
-				if(commentId == 0) {
+
+				if (commentId == 0) {
 					continue;
 				}
 
@@ -430,9 +431,12 @@ public class ArticleController extends Controller {
 				return;
 			}
 
-			System.out.println("번호 / 제목 / 작성자");
+			System.out.println("번호 / 제목 / 작성자 [댓글 수]");
 			for (Article article : articles) {
-				System.out.printf("%d / %s / %s\n", article.getId(), article.getTitle(), article.getExtra_writer());
+				int commentCnt = articleService.getCommentsCnt(article.getId());
+
+				System.out.printf("%d / %s / %s / [%d]\n", article.getId(), article.getTitle(),
+						article.getExtra_writer(), commentCnt);
 			}
 
 			int articleCnt = articleService.getArticlesCnt(searchKeyword);
@@ -448,10 +452,21 @@ public class ArticleController extends Controller {
 			System.out.printf("현재 페이지: %d, 마지막 페이지: %d, 전체 글 수: %d\n", page, lastPage, articleCnt);
 			System.out.printf(">> [페이지 이동] 번호, [종료] 0 미만의 수 입력 <<\n");
 
-			System.out.printf("[article list] 명령어) ");
-			page = scanner.nextInt();
+			// 예외 처리
+			while (true) {
+				try {
+					System.out.printf("[article comment] 명령어) ");
 
-			scanner.nextLine(); // 입력 버퍼 \n 이 남아있으므로 비워줍니다.
+					// scanner 객체를 재생성해줘야 합니다.
+					// 예외로 인해 catch 방문하면 객체 사라지기 때문에 오류뜹니다.
+					page = new Scanner(System.in).nextInt();
+
+					break;
+				} catch (InputMismatchException e) {
+					System.out.println("정상적인 숫자를 입력해주세요.");
+				}
+			}
+
 
 			if (page <= 0) {
 				System.out.println("게시판 조회를 종료합니다.");
@@ -498,6 +513,10 @@ public class ArticleController extends Controller {
 		System.out.println("\n== 게시글 댓글 ==");
 
 		List<Comment> comments = articleService.getCommentsById(id);
+
+		if (comments.size() == 0) {
+			System.out.println("댓글이 존재하지 않습니다.");
+		}
 
 		for (Comment comment : comments) {
 			System.out.printf("[%d] 작성자: %s, 제목: %s, 내용: %s\n", comment.getId(), comment.getExtra_writer(),

@@ -15,57 +15,57 @@ public class ArticleService {
 	}
 
 	public int doWrite(String title, String body, int loginedMemberId) {
-		
+
 		return articleDao.doWrite(title, body, loginedMemberId);
-		
+
 	}
 
 	public int getArticleCntById(int id) {
-		
+
 		return articleDao.getArticleCntById(id);
-		
+
 	}
 
 	public void doModify(String title, String body, int id) {
-		
+
 		articleDao.doModify(title, body, id);
-		
+
 	}
 
 	public List<Article> getArticles(int page, int itemsInAPage) {
-		
+
 		int limitFrom = (page - 1) * itemsInAPage;
 		int limitTake = itemsInAPage;
-		
+
 		return articleDao.getArticles(limitFrom, limitTake);
-		
+
 	}
 
 	public Article getArticle(int id) {
 
 		return articleDao.getArticle(id);
-		
+
 	}
 
 	public void doDelete(int id) {
-		
+
 		articleDao.doDelete(id);
-		
+
 	}
 
 	public List<Article> getArticlesByKeyword(int page, int itemsInAPage, String searchKeyword) {
-		
+
 		int limitFrom = (page - 1) * itemsInAPage;
 		int limitTake = itemsInAPage;
-		
+
 		return articleDao.getArticlesByKeyword(limitFrom, limitTake, searchKeyword);
-		
+
 	}
 
 	public void increaseHit(int id) {
-		
+
 		articleDao.increaseHit(id);
-		
+
 	}
 
 	public int getArticlesCnt(String searchKeyword) {
@@ -73,21 +73,21 @@ public class ArticleService {
 	}
 
 	public void insertLike(int id, int likeType, int loginedMemberId) {
-		
+
 		articleDao.insertLike(id, likeType, loginedMemberId);
-		
+
 	}
 
 	public int likeCheck(int id, int loginedMemberId) {
-		
+
 		return articleDao.likeCheck(id, loginedMemberId);
-		
+
 	}
 
 	public void modifyLike(int id, int likeType, int loginedMemberId) {
-		
+
 		articleDao.modifyLike(id, likeType, loginedMemberId);
-		
+
 	}
 
 	public int getLikeVal(int id, int likeType) {
@@ -95,26 +95,26 @@ public class ArticleService {
 	}
 
 	public void deleteLike(int id, int loginedMemberId) {
-		
+
 		articleDao.deleteLike(id, loginedMemberId);
-		
+
 	}
 
 	public int wirteComment(int id, String title, String body, int loginedMemberId) {
-		
+
 		return articleDao.writeComment(id, title, body, loginedMemberId);
 	}
 
 	public List<Comment> getCommentsById(int id) {
-		
+
 		return articleDao.getCommentsById(id);
-		
+
 	}
 
 	public int getCommentCntById(int commentId, int id) {
-		
+
 		return articleDao.getCommentCntById(commentId, id);
-		
+
 	}
 
 	public Comment getCommentById(int commentId) {
@@ -123,27 +123,32 @@ public class ArticleService {
 	}
 
 	public void modifyComment(int commentId, String title, String body) {
-		
+
 		articleDao.modifyComment(commentId, title, body);
-		
+
 	}
 
 	public void deleteComment(int commentId) {
-		
+
 		articleDao.deleteComment(commentId);
-		
+
 	}
 
 	public List<Comment> getCommentsByPage(int id, int page, int itemsInAPage) {
 
 		int limitFrom = (page - 1) * itemsInAPage;
 		int limitTake = itemsInAPage;
-		
+
 		return articleDao.getCommentsByPage(id, limitFrom, limitTake);
 	}
 
 	public int getCommentsCnt(int id) {
 		return articleDao.getCommentsCnt(id);
+	}
+
+	public List<Article> getArticles() {
+		
+		return articleDao.getArticles();
 	}
 
 }

@@ -62,7 +62,6 @@ public class App {
 		} catch (ClassNotFoundException e) {
 			System.out.println("드라이버 로딩 실패");
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
 			System.out.println("에러: " + e);
 		} finally {
 			try {

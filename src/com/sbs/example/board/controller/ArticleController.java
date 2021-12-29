@@ -46,8 +46,6 @@ public class ArticleController extends Controller {
 			doDelete();
 		} else if (cmd.startsWith("article like ")) {
 			doLike();
-		} else if (cmd.startsWith("article comment ")) {
-			doComment();
 		} else if (cmd.equals("article export")) {
 			doHtml();
 		} else {
@@ -86,49 +84,22 @@ public class ArticleController extends Controller {
 		
 	}
 
-	private void doComment() {
-
-		if (session.getLoginedMember() == null) {
-			System.out.println("로그인 후 이용해주세요.");
-			return;
-		}
-
-		boolean isInt = cmd.split(" ")[2].matches("-?\\d+");
-
-		if (!isInt) {
-			System.out.println("게시글의 ID를 숫자로 입력해주세요.");
-			return;
-		}
-
-		int id = Integer.parseInt(cmd.split(" ")[2].trim());
-
-		int articlesCount = articleService.getArticleCntById(id);
-
-		if (articlesCount == 0) {
-			System.out.printf("%d번 게시글이 존재하지 않습니다.\n", id);
-			return;
-		}
+	private void doComment(int articleId) {
 
 		while (true) {
 
+			int totalCommentsCnt = articleService.getCommentsCnt(articleId);
 			// 해당 글의 댓글 확인
-			System.out.printf("== %d번 게시글의 댓글 ==\n", id);
+			System.out.printf("%d번 게시글의 댓글 수: %d\n", articleId, totalCommentsCnt);
 
-			List<Comment> comments = articleService.getCommentsById(id);
-
-			for (Comment comment : comments) {
-				System.out.printf("[%d] 작성자: %s, 제목: %s, 내용: %s\n", comment.getId(), comment.getExtra_writer(),
-						comment.getTitle(), comment.getBody());
-			}
-
-			System.out.printf(">> [글쓰기] 1, [수정하기] 2, [페이징] 3, [삭제] 4, [나가기] 0 <<\n");
+			System.out.printf(">> [댓글작성] 1, [수정] 2, [댓글보기] 3, [삭제] 4, [나가기] 0 <<\n");
 
 			int commentType;
 
 			// 예외 처리
 			while (true) {
 				try {
-					System.out.printf("[article comment] 명령어) ");
+					System.out.printf("[article detail] 명령어) ");
 
 					// scanner 객체를 재생성해줘야 합니다.
 					// 예외로 인해 catch 방문하면 객체 사라지기 때문에 오류뜹니다.
@@ -141,10 +112,15 @@ public class ArticleController extends Controller {
 			}
 
 			if (commentType == 0) {
-				System.out.println("article comment 명령을 종료합니다.");
+				System.out.println("article detail 명령을 종료합니다.");
 				return;
 			} else if (commentType == 1) {
 				// 댓글 작성
+				
+				if (session.getLoginedMember() == null) {
+					System.out.println("로그인 후 이용해주세요.");
+					continue;
+				}
 
 				System.out.println("== 댓글 작성 ==");
 				System.out.printf("댓글 제목: ");
@@ -152,11 +128,16 @@ public class ArticleController extends Controller {
 				System.out.printf("댓글 내용: ");
 				String body = scanner.nextLine();
 
-				int commentId = articleService.wirteComment(id, title, body, session.getLoginedMemberId());
+				int commentId = articleService.wirteComment(articleId, title, body, session.getLoginedMemberId());
 
-				System.out.printf("%d번 게시글에 %d번 댓글이 생성되었습니다. \n", id, commentId);
+				System.out.printf("%d번 게시글에 %d번 댓글이 생성되었습니다. \n", articleId, commentId);
 
 			} else if (commentType == 2) {
+				
+				if (session.getLoginedMember() == null) {
+					System.out.println("로그인 후 이용해주세요.");
+					continue;
+				}
 				// 댓글 수정
 
 				// 수정할 댓글 존재 X
@@ -182,7 +163,7 @@ public class ArticleController extends Controller {
 				}
 
 				// 수정할 댓글이 있는지?
-				int commentCnt = articleService.getCommentCntById(commentId, id);
+				int commentCnt = articleService.getCommentCntById(commentId, articleId);
 
 				if (commentCnt == 0) {
 					System.out.println("수정할 댓글이 존재하지 않습니다.");
@@ -204,7 +185,7 @@ public class ArticleController extends Controller {
 
 				articleService.modifyComment(commentId, title, body);
 
-				System.out.printf("%d번 게시글에 %d번 댓글이 수정되었습니다. \n", id, commentId);
+				System.out.printf("%d번 게시글에 %d번 댓글이 수정되었습니다. \n", articleId, commentId);
 
 			} else if (commentType == 3) {
 				// 댓글 페이징
@@ -215,11 +196,11 @@ public class ArticleController extends Controller {
 				System.out.println("== 댓글 페이징 ==");
 
 				int page = 1;
-				int itemsInAPage = 10;
+				int itemsInAPage = 5;
 
 				while (true) {
 					// 현재 게시물 id에 해당하는 댓글 리스트 가져오기
-					List<Comment> pageComments = articleService.getCommentsByPage(id, page, itemsInAPage);
+					List<Comment> pageComments = articleService.getCommentsByPage(articleId, page, itemsInAPage);
 
 					if (pageComments.size() == 0) {
 						System.out.println("댓글이 존재하지 않습니다.");
@@ -232,7 +213,7 @@ public class ArticleController extends Controller {
 					}
 
 					// 해당하는 글에 대한 댓글 수 반환
-					int commentsCnt = articleService.getCommentsCnt(id);
+					int commentsCnt = articleService.getCommentsCnt(articleId);
 					int lastCommentPage = (int) Math.ceil(commentsCnt / (double) itemsInAPage);
 
 					System.out.printf("현재 댓글 페이지: %d, 마지막 댓글 페이지: %d, 전체 댓글 수: %d\n", page, lastCommentPage,
@@ -251,6 +232,12 @@ public class ArticleController extends Controller {
 				}
 
 			} else if (commentType == 4) {
+				
+				if (session.getLoginedMember() == null) {
+					System.out.println("로그인 후 이용해주세요.");
+					continue;
+				}
+
 				// 댓글 삭제
 
 				System.out.println("== 댓글 삭제 ==");
@@ -273,7 +260,7 @@ public class ArticleController extends Controller {
 				}
 
 				// 삭제할 댓글이 있는지?
-				int commentCnt = articleService.getCommentCntById(commentId, id);
+				int commentCnt = articleService.getCommentCntById(commentId, articleId);
 
 				if (commentCnt == 0) {
 					System.out.println("삭제할 댓글이 존재하지 않습니다.");
@@ -290,7 +277,7 @@ public class ArticleController extends Controller {
 
 				articleService.deleteComment(commentId);
 
-				System.out.printf("%d번 게시글에 %d번 댓글이 삭제되었습니다. \n", id, commentId);
+				System.out.printf("%d번 게시글에 %d번 댓글이 삭제되었습니다. \n", articleId, commentId);
 
 			} else {
 				System.out.println("표시된 명령어 숫자만 입력해주세요.");
@@ -546,16 +533,7 @@ public class ArticleController extends Controller {
 
 		System.out.println("\n== 게시글 댓글 ==");
 
-		List<Comment> comments = articleService.getCommentsById(id);
-
-		if (comments.size() == 0) {
-			System.out.println("댓글이 존재하지 않습니다.");
-		}
-
-		for (Comment comment : comments) {
-			System.out.printf("[%d] 작성자: %s, 제목: %s, 내용: %s\n", comment.getId(), comment.getExtra_writer(),
-					comment.getTitle(), comment.getBody());
-		}
+		doComment(id);
 
 	}
 

@@ -44,8 +44,6 @@ public class ArticleController extends Controller {
 			showDetail();
 		} else if (cmd.startsWith("article delete ")) {
 			doDelete();
-		} else if (cmd.startsWith("article like ")) {
-			doLike();
 		} else if (cmd.equals("article export")) {
 			doHtml();
 		} else {
@@ -84,7 +82,7 @@ public class ArticleController extends Controller {
 		
 	}
 
-	private void doComment(int articleId) {
+	private void doDetailAction(int articleId) {
 
 		while (true) {
 
@@ -92,18 +90,18 @@ public class ArticleController extends Controller {
 			// 해당 글의 댓글 확인
 			System.out.printf("%d번 게시글의 댓글 수: %d\n", articleId, totalCommentsCnt);
 
-			System.out.printf(">> [댓글작성] 1, [수정] 2, [댓글보기] 3, [삭제] 4, [나가기] 0 <<\n");
+			System.out.printf(">> [댓글작성] 1, [수정] 2, [댓글보기] 3, [삭제] 4, [추천/비추천] 5, [나가기] 0 <<\n");
 
-			int commentType;
+			int actionType;
 
 			// 예외 처리
 			while (true) {
 				try {
-					System.out.printf("[article detail] 명령어) ");
+					System.out.printf("[article detail action] 명령어) ");
 
 					// scanner 객체를 재생성해줘야 합니다.
 					// 예외로 인해 catch 방문하면 객체 사라지기 때문에 오류뜹니다.
-					commentType = new Scanner(System.in).nextInt();
+					actionType = new Scanner(System.in).nextInt();
 
 					break;
 				} catch (InputMismatchException e) {
@@ -111,10 +109,10 @@ public class ArticleController extends Controller {
 				}
 			}
 
-			if (commentType == 0) {
-				System.out.println("article detail 명령을 종료합니다.");
+			if (actionType == 0) {
+				System.out.println("[article detail action] 명령을 종료합니다.");
 				return;
-			} else if (commentType == 1) {
+			} else if (actionType == 1) {
 				// 댓글 작성
 				
 				if (session.getLoginedMember() == null) {
@@ -132,7 +130,7 @@ public class ArticleController extends Controller {
 
 				System.out.printf("%d번 게시글에 %d번 댓글이 생성되었습니다. \n", articleId, commentId);
 
-			} else if (commentType == 2) {
+			} else if (actionType == 2) {
 				
 				if (session.getLoginedMember() == null) {
 					System.out.println("로그인 후 이용해주세요.");
@@ -187,7 +185,7 @@ public class ArticleController extends Controller {
 
 				System.out.printf("%d번 게시글에 %d번 댓글이 수정되었습니다. \n", articleId, commentId);
 
-			} else if (commentType == 3) {
+			} else if (actionType == 3) {
 				// 댓글 페이징
 
 				// 수정할 댓글 존재 X
@@ -241,7 +239,7 @@ public class ArticleController extends Controller {
 					}
 				}
 
-			} else if (commentType == 4) {
+			} else if (actionType == 4) {
 				
 				if (session.getLoginedMember() == null) {
 					System.out.println("로그인 후 이용해주세요.");
@@ -289,6 +287,16 @@ public class ArticleController extends Controller {
 
 				System.out.printf("%d번 게시글에 %d번 댓글이 삭제되었습니다. \n", articleId, commentId);
 
+			} else if (actionType == 5) {
+				
+				if (session.getLoginedMember() == null) {
+					System.out.println("로그인 후 이용해주세요.");
+					continue;
+				}
+
+				// 댓글 삭제
+				doLike(articleId);
+
 			} else {
 				System.out.println("표시된 명령어 숫자만 입력해주세요.");
 			}
@@ -296,33 +304,17 @@ public class ArticleController extends Controller {
 
 	}
 
-	private void doLike() {
+	private void doLike(int articleId) {
 
 		if (session.getLoginedMember() == null) {
 			System.out.println("로그인 후 이용해주세요.");
 			return;
 		}
 
-		boolean isInt = cmd.split(" ")[2].matches("-?\\d+");
-
-		if (!isInt) {
-			System.out.println("게시글의 ID를 숫자로 입력해주세요.");
-			return;
-		}
-
-		int id = Integer.parseInt(cmd.split(" ")[2].trim());
-
-		int articlesCount = articleService.getArticleCntById(id);
-
-		if (articlesCount == 0) {
-			System.out.printf("%d번 게시글이 존재하지 않습니다.\n", id);
-			return;
-		}
-
 		System.out.println("== 게시글 추천/비추천 ==");
 		System.out.printf(">> [추천] 1, [비추천] 2, [해제] 3, [나가기] 0 <<\n");
 
-		System.out.printf("[article like] 명령어) ");
+		System.out.printf("[article detail action -> like] 명령어) ");
 		int likeType = scanner.nextInt();
 
 		scanner.nextLine(); // 입력 버퍼 \n 이 남아있으므로 비워줍니다.
@@ -334,11 +326,11 @@ public class ArticleController extends Controller {
 		// 이미 추천/반대 했는지 여부 확인
 		// 했다면 추천/반대 값을 리턴받음
 		// 안했다면 0을 리턴받음
-		int likeCheckCnt = articleService.likeCheck(id, session.getLoginedMemberId());
+		int likeCheckCnt = articleService.likeCheck(articleId, session.getLoginedMemberId());
 
 		if (likeCheckCnt == 0) {
 			if (likeType == 1 || likeType == 2) {
-				articleService.insertLike(id, likeType, session.getLoginedMemberId());
+				articleService.insertLike(articleId, likeType, session.getLoginedMemberId());
 
 				String msg = (likeType == 1 ? "추천" : "비추천");
 				System.out.println(msg + " 완료");
@@ -349,7 +341,7 @@ public class ArticleController extends Controller {
 			}
 		} else {
 			if (likeType == 3) {
-				articleService.deleteLike(id, session.getLoginedMemberId());
+				articleService.deleteLike(articleId, session.getLoginedMemberId());
 				System.out.println("추천/반대를 해제합니다.");
 				return;
 			}
@@ -360,7 +352,7 @@ public class ArticleController extends Controller {
 				return;
 			} else {
 				// modify
-				articleService.modifyLike(id, likeType, session.getLoginedMemberId());
+				articleService.modifyLike(articleId, likeType, session.getLoginedMemberId());
 
 				String msg = (likeType == 1 ? "추천" : "비추천");
 				System.out.println(msg + "으로 변경 완료");
@@ -548,7 +540,7 @@ public class ArticleController extends Controller {
 
 		System.out.println("\n== 게시글 댓글 ==");
 
-		doComment(id);
+		doDetailAction(id);
 
 	}
 

@@ -206,11 +206,21 @@ public class ArticleController extends Controller {
 						System.out.println("댓글이 존재하지 않습니다.");
 						break;
 					}
+					
+					DateTimeFormatter formatter = DateTimeFormatter.ISO_DATE;
+					
 
+					System.out.printf("번호  | 등록날짜              | 제목		| 내용			| 작성자 \n");
+					System.out.println(
+							"================================================================================================");
 					for (Comment comment : pageComments) {
-						System.out.printf("[%d] 작성자: %s, 제목: %s, 내용: %s\n", comment.getId(), comment.getExtra_writer(),
-								comment.getTitle(), comment.getBody());
+						
+						String regDate = comment.getRegDate().format(formatter);
+						
+						System.out.printf("%-4d | %-19s | %-14s	| %-14s	| %s \n", comment.getId(), regDate, comment.getTitle(), comment.getBody(), comment.getExtra_writer());
 					}
+					System.out.println(
+							"================================================================================================");
 
 					// 해당하는 글에 대한 댓글 수 반환
 					int commentsCnt = articleService.getCommentsCnt(articleId);
@@ -452,6 +462,7 @@ public class ArticleController extends Controller {
 				return;
 			}
 
+			
 			System.out.println("번호 / 제목 / 작성자 [댓글 수]");
 			for (Article article : articles) {
 				int commentCnt = articleService.getCommentsCnt(article.getId());
@@ -525,11 +536,15 @@ public class ArticleController extends Controller {
 		String regDate = article.getRegDate().format(formatter);
 
 		System.out.println("== 게시글 상세페이지 ==");
-
-		System.out.printf("[%d] 작성자: %s 작성일: %s\n", article.getId(), article.getExtra_writer(), regDate);
-		System.out.printf("조회수: %d / 추천: %d / 반대: %d\n", article.getHit(), likeVal, disLikeVal);
-		System.out.printf("제목: %s\n", article.getTitle());
-		System.out.printf("내용: %s\n", article.getBody());
+		
+		System.out.printf("* 게시글 상세보기===============================================================\n");
+		System.out.printf("* 게시글 번호 : %d				작성자 : %s\n", article.getId(), article.getExtra_writer());
+		System.out.printf("* 등록일자 : %s		갱신일자 : %s\n", article.getRegDate(), article.getUpdateDate());
+		System.out.printf("* 제목 : %s\n", article.getTitle());
+		System.out.printf("* 내용 =========================================================================\n");
+		System.out.printf(
+				"| >> %s \n* ======================================================== 추천 : %-3d 비추천 : %-3d\n",
+				article.getBody(), likeVal, disLikeVal);
 
 		System.out.println("\n== 게시글 댓글 ==");
 
